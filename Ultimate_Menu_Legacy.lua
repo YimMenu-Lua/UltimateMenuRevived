@@ -20,14 +20,14 @@ AUAJg4 = FMg + 9202 -- apartment unlock all jobs global 4 ("ROOT_ID_HASH_SERIES_
 AUAJg5 = FMg + 9208 -- apartment unlock all jobs global 5 ("ROOT_ID_HASH_THE_PACIFIC_STANDARD_JOB")
 AIFl1 = 19808 -- apartment instant finish local 1
 AIFl2 = 19808 + 1062 -- apartment instant finish local 2
-AIFl3 = 19808 + 1740 + 1 -- apartment instant finish local 3 
-AIFl4 = 19808 + 2686 -- apartment instant finish local 4 
+AIFl3 = 19808 + 1740 + 1 -- apartment instant finish local 3
+AIFl4 = 19808 + 2686 -- apartment instant finish local 4
 AIFl5 = 28722 + 1 -- apartment instant finish local 5
 AIFl6 = 31981 + 1 + 68 -- apartment instant finish local 6
 AFHl = 11837 + 24 -- apartment fleeca hack local
 AFDl = 10125 + 11 -- apartment fleeca drill local
 AFPl = 9831 -- apartment pacific hack local
-AHSo = 19808 + 2  -- Apartment heist skip checkpoint
+AHSo = 19808 + 2 -- Apartment heist skip checkpoint
 ACDg = 2686119 -- apartment cooldown global
 AHDg = 4718592 + 3771 -- search in tuneables_processing.c for joaat("HEIST_DIFFICULTY_EASY") then search the global you find in fmmc_launcher.c then take the global in switch state above it done
 AHLIVES = 26234 + 1325 + 1 -- Apartment Heist team lives local found below if (eventData == -1248635465) in ("fm_mission_controller")
@@ -113,9 +113,9 @@ AGFl1 = 56070 + 1
 AGFl2 = 56070 + 1776 + 1
 
 -- Auto Shop variables
-ASIFl1 = 56070 + 1 -- auto shop instant finish local 1 
-ASIFl2 = 56070 + 1776 + 1 -- auto shop finish local 2 
-ASRBl = 416 -- auto shop reload board local 
+ASIFl1 = 56070 + 1 -- auto shop instant finish local 1
+ASIFl2 = 56070 + 1776 + 1 -- auto shop finish local 2
+ASRBl = 416 -- auto shop reload board local
 
 -- Salvage Yard
 SYRl1 = 545 -- salvage yard reload board local
@@ -134,7 +134,6 @@ IHPL = 56070 + 1776 + 1 --Instant Heist Passed Locals (Casino And CayoPerico)
 NLCl = 213 + 32 + 19 + 1 --("nightclub_office_cutscene") in ("am_mp_nightclub")
 
 SNOW = FMg + 4413
-
 
 halloweatherAddress = FMg + 32247
 
@@ -202,7 +201,9 @@ end
 
 function SPX()
     local player_ped = PLAYER.PLAYER_PED_ID()
-    if player_ped == 0 then return "SP0_" end
+    if player_ped == 0 then
+        return "SP0_"
+    end
     local PI = ENTITY.GET_ENTITY_MODEL(player_ped)
     if PI == joaat("Player_One") then
         return "SP1_"
@@ -218,7 +219,10 @@ function checkOnline()
     if bypassOnlineCheckbox and bypassOnlineCheckbox:is_enabled() then
         return false
     end
-    if SCRIPT.GET_NUMBER_OF_THREADS_RUNNING_THE_SCRIPT_WITH_THIS_HASH(joaat("maintransition")) > 0 or not ENTITY.DOES_ENTITY_EXIST(PLAYER.PLAYER_PED_ID()) then
+    if
+        SCRIPT.GET_NUMBER_OF_THREADS_RUNNING_THE_SCRIPT_WITH_THIS_HASH(joaat("maintransition")) > 0
+        or not ENTITY.DOES_ENTITY_EXIST(PLAYER.PLAYER_PED_ID())
+    then
         ImGui.Text("Waiting for game...")
         return true
     end
@@ -230,7 +234,10 @@ function checkOnline()
 end
 
 function checkStoryMode()
-    if SCRIPT.GET_NUMBER_OF_THREADS_RUNNING_THE_SCRIPT_WITH_THIS_HASH(joaat("maintransition")) > 0 or not ENTITY.DOES_ENTITY_EXIST(PLAYER.PLAYER_PED_ID()) then
+    if
+        SCRIPT.GET_NUMBER_OF_THREADS_RUNNING_THE_SCRIPT_WITH_THIS_HASH(joaat("maintransition")) > 0
+        or not ENTITY.DOES_ENTITY_EXIST(PLAYER.PLAYER_PED_ID())
+    then
         ImGui.Text("Waiting for game...")
         return true
     end
@@ -246,7 +253,10 @@ function isOffline()
     if bypassOnlineCheckbox and bypassOnlineCheckbox:is_enabled() then
         return false
     end
-    if SCRIPT.GET_NUMBER_OF_THREADS_RUNNING_THE_SCRIPT_WITH_THIS_HASH(joaat("maintransition")) > 0 or not ENTITY.DOES_ENTITY_EXIST(PLAYER.PLAYER_PED_ID()) then
+    if
+        SCRIPT.GET_NUMBER_OF_THREADS_RUNNING_THE_SCRIPT_WITH_THIS_HASH(joaat("maintransition")) > 0
+        or not ENTITY.DOES_ENTITY_EXIST(PLAYER.PLAYER_PED_ID())
+    then
         return true
     end
     if not network.is_session_started() then
@@ -276,7 +286,9 @@ function initStoryTab(tab)
         story_widgets[tab] = {}
         tab:add_imgui(function()
             -- Only call checkStoryMode() once here
-            if checkStoryMode() then return end
+            if checkStoryMode() then
+                return
+            end
             for _, widget in ipairs(story_widgets[tab]) do
                 if widget.type == "button" then
                     if ImGui.Button(widget.label) then
@@ -330,7 +342,7 @@ function addStoryCheckbox(tab, label, default_value)
         end,
         set_enabled = function(self, val)
             self.state = val
-        end
+        end,
     }
     table.insert(story_widgets[tab], checkbox_obj)
     return checkbox_obj
@@ -347,7 +359,7 @@ function addStoryInputInt(tab, label, default_value)
         end,
         set_value = function(self, val)
             self.value = val
-        end
+        end,
     }
     table.insert(story_widgets[tab], input_obj)
     return input_obj
@@ -355,42 +367,44 @@ end
 
 function makeStoryTab(tab)
     local wrapped = {}
-    
+
     function wrapped:add_tab(name)
         return makeStoryTab(tab:add_tab(name))
     end
-    
+
     function wrapped:add_button(label, callback)
         addStoryButton(tab, label, callback)
     end
-    
+
     function wrapped:add_checkbox(label, default_value)
         return addStoryCheckbox(tab, label, default_value)
     end
-    
+
     function wrapped:add_input_int(label, default_value)
         return addStoryInputInt(tab, label, default_value)
     end
-    
+
     function wrapped:add_text(label)
         addStoryText(tab, label)
     end
-    
+
     function wrapped:add_separator()
         addStorySeparator(tab)
     end
-    
+
     function wrapped:add_sameline()
         addStorySameline(tab)
     end
-    
+
     function wrapped:add_imgui(callback)
         tab:add_imgui(function()
-            if checkStoryMode() then return end
+            if checkStoryMode() then
+                return
+            end
             callback()
         end)
     end
-    
+
     return wrapped
 end
 
@@ -401,7 +415,9 @@ function initOnlineTab(tab)
         online_widgets[tab] = {}
         ensureOnlineGuard(tab) -- shared guard shows the warning
         tab:add_imgui(function()
-            if isOffline() then return end -- silent check, no duplicate text
+            if isOffline() then
+                return
+            end -- silent check, no duplicate text
             for _, widget in ipairs(online_widgets[tab]) do
                 if widget.type == "button" then
                     if ImGui.Button(widget.label) then
@@ -455,7 +471,7 @@ function addOnlineCheckbox(tab, label, default_value)
         end,
         set_enabled = function(self, val)
             self.state = val
-        end
+        end,
     }
     table.insert(online_widgets[tab], checkbox_obj)
     return checkbox_obj
@@ -472,7 +488,7 @@ function addOnlineInputInt(tab, label, default_value)
         end,
         set_value = function(self, val)
             self.value = val
-        end
+        end,
     }
     table.insert(online_widgets[tab], input_obj)
     return input_obj
@@ -480,50 +496,52 @@ end
 
 function makeOnlineTab(tab)
     local wrapped = {}
-    
+
     function wrapped:add_tab(name)
         return makeOnlineTab(tab:add_tab(name))
     end
-    
+
     function wrapped:add_button(label, callback)
         addOnlineButton(tab, label, callback)
     end
-    
+
     function wrapped:add_checkbox(label, default_value)
         return addOnlineCheckbox(tab, label, default_value)
     end
-    
+
     function wrapped:add_input_int(label, default_value)
         return addOnlineInputInt(tab, label, default_value)
     end
-    
+
     function wrapped:add_text(label)
         addOnlineText(tab, label)
     end
-    
+
     function wrapped:add_separator()
         addOnlineSeparator(tab)
     end
-    
+
     function wrapped:add_sameline()
         addOnlineSameline(tab)
     end
-    
+
     function wrapped:add_imgui(callback)
         ensureOnlineGuard(tab) -- shared guard shows the warning
         tab:add_imgui(function()
-            if isOffline() then return end -- silent check, no duplicate text
+            if isOffline() then
+                return
+            end -- silent check, no duplicate text
             callback()
         end)
     end
-    
+
     return wrapped
 end
 
 function CutsPresetter(global_start, global_finish, cut)
     globals.set_int(GCg, cut)
     for i = global_start, global_finish do
-        globals.set_int(i, cut)        
+        globals.set_int(i, cut)
     end
 end
 
@@ -542,6 +560,18 @@ end
 
 local currentlevel = 0
 local currentcrewlevel = 0
+
+function stats_set_packed_bools(packed_bool_start, packed_bool_finish, bool)
+    for i = packed_bool_start, packed_bool_finish do
+        stats.set_packed_stat_bool(i, bool)
+    end
+end
+
+function globals_set_ints(global_start, global_finish, step, value)
+    for i = global_start, global_finish, step do
+        globals.set_int(i, value)
+    end
+end
 
 function null() end
 
@@ -568,7 +598,12 @@ Self = makeOnlineTab(L7NEG:add_tab("Self Menu"))
 AGCT = Self:add_checkbox("Unlock Gender Change")
 script.register_looped("UnlockGenderChange", function(script)
     script:yield()
-    if not network.is_session_started() or SCRIPT.GET_NUMBER_OF_THREADS_RUNNING_THE_SCRIPT_WITH_THIS_HASH(joaat("maintransition")) > 0 then return end
+    if
+        not network.is_session_started()
+        or SCRIPT.GET_NUMBER_OF_THREADS_RUNNING_THE_SCRIPT_WITH_THIS_HASH(joaat("maintransition")) > 0
+    then
+        return
+    end
     if AGCT:is_enabled() then
         stats.set_int(MPX() .. "ALLOW_GENDER_CHANGE", 52)
     else
@@ -579,7 +614,12 @@ end)
 RTPT = Self:add_checkbox("Remove Transaction Error")
 script.register_looped("RemoveTransactionError", function(script)
     script:yield()
-    if not network.is_session_started() or SCRIPT.GET_NUMBER_OF_THREADS_RUNNING_THE_SCRIPT_WITH_THIS_HASH(joaat("maintransition")) > 0 then return end
+    if
+        not network.is_session_started()
+        or SCRIPT.GET_NUMBER_OF_THREADS_RUNNING_THE_SCRIPT_WITH_THIS_HASH(joaat("maintransition")) > 0
+    then
+        return
+    end
     if RTPT:is_enabled() then
         globals.set_int(4516981, 0)
         globals.set_int(4516982, 0)
@@ -838,7 +878,9 @@ RankSetter = RecoveryMenu:add_tab("Set Rank menu")
 
 local rpLevelValue = 1
 RankSetter:add_imgui(function()
-    if checkOnline() then return end
+    if checkOnline() then
+        return
+    end
 
     ImGui.Text("Your current Rank is " .. stats.get_int(MPX() .. "CHAR_RANK_FM"))
     ImGui.Separator()
@@ -872,7 +914,9 @@ CrewRankSetter = RecoveryMenu:add_tab("Set Crew Rank menu")
 
 local crewRpLevelValue = 1
 CrewRankSetter:add_imgui(function()
-    if checkOnline() then return end
+    if checkOnline() then
+        return
+    end
 
     ImGui.Text("Your Current Crew Rank is " .. stats.get_int("MPPLY_CURRENT_CREW_RANK"))
     ImGui.Separator()
@@ -882,7 +926,10 @@ CrewRankSetter:add_imgui(function()
     if ImGui.Button("Set Slot 1 Crew Rank") then
         local rankValue = crewRpLevelValue
         if rankValue <= 0 or rankValue > 8000 then
-            gui.show_message("ERROR", "Your Crew level " .. rankValue .. " cannot be set because it is outside the valid range (1-8000).")
+            gui.show_message(
+                "ERROR",
+                "Your Crew level " .. rankValue .. " cannot be set because it is outside the valid range (1-8000)."
+            )
         else
             stats.set_int("MPPLY_CREW_LOCAL_XP_0", getRP(rankValue))
             gui.show_message("Crew Rank Setter", "Your Crew Slot 1 Rank was set to " .. rankValue .. ", .")
@@ -892,7 +939,10 @@ CrewRankSetter:add_imgui(function()
     if ImGui.Button("Set Slot 2 Crew Rank") then
         local rankValue = crewRpLevelValue
         if rankValue <= 0 or rankValue > 8000 then
-            gui.show_message("ERROR", "Your Crew level " .. rankValue .. " cannot be set because it is outside the valid range (1-8000).")
+            gui.show_message(
+                "ERROR",
+                "Your Crew level " .. rankValue .. " cannot be set because it is outside the valid range (1-8000)."
+            )
         else
             stats.set_int("MPPLY_CREW_LOCAL_XP_1", getRP(rankValue))
             gui.show_message("Crew Rank Setter", "Your Crew Slot 2 Rank was set to " .. rankValue .. ", .")
@@ -902,7 +952,10 @@ CrewRankSetter:add_imgui(function()
     if ImGui.Button("Set Slot 3 Crew Rank") then
         local rankValue = crewRpLevelValue
         if rankValue <= 0 or rankValue > 8000 then
-            gui.show_message("ERROR", "Your Crew level " .. rankValue .. " cannot be set because it is outside the valid range (1-8000).")
+            gui.show_message(
+                "ERROR",
+                "Your Crew level " .. rankValue .. " cannot be set because it is outside the valid range (1-8000)."
+            )
         else
             stats.set_int("MPPLY_CREW_LOCAL_XP_2", getRP(rankValue))
             gui.show_message("Crew Rank Setter", "Your Crew Slot 3 Rank was set to " .. rankValue .. ", .")
@@ -912,7 +965,10 @@ CrewRankSetter:add_imgui(function()
     if ImGui.Button("Set Slot 4 Crew Rank") then
         local rankValue = crewRpLevelValue
         if rankValue <= 0 or rankValue > 8000 then
-            gui.show_message("ERROR", "Your Crew level " .. rankValue .. " cannot be set because it is outside the valid range (1-8000).")
+            gui.show_message(
+                "ERROR",
+                "Your Crew level " .. rankValue .. " cannot be set because it is outside the valid range (1-8000)."
+            )
         else
             stats.set_int("MPPLY_CREW_LOCAL_XP_3", getRP(rankValue))
             gui.show_message("Crew Rank Setter", "Your Crew Slot 4 Rank was set to " .. rankValue .. ", .")
@@ -922,7 +978,10 @@ CrewRankSetter:add_imgui(function()
     if ImGui.Button("Set Slot 5 Crew Rank") then
         local rankValue = crewRpLevelValue
         if rankValue <= 0 or rankValue > 8000 then
-            gui.show_message("ERROR", "Your Crew level " .. rankValue .. " cannot be set because it is outside the valid range (1-8000).")
+            gui.show_message(
+                "ERROR",
+                "Your Crew level " .. rankValue .. " cannot be set because it is outside the valid range (1-8000)."
+            )
         else
             stats.set_int("MPPLY_CREW_LOCAL_XP_4", getRP(rankValue))
             gui.show_message("Crew Rank Setter", "Your Crew Slot 5 Rank was set to " .. rankValue .. ", .")
@@ -976,7 +1035,9 @@ prize_wheel_prize_state = 45
 CasinoServicesMenu:add_text("Casino Chips")
 chipsVal = 1800
 CasinoServicesMenu:add_imgui(function()
-    if isOffline() then return end
+    if isOffline() then
+        return
+    end
     chipsVal, used = ImGui.SliderInt("Casino Chips Buy Limit", chipsVal, 1800, 2147483647)
     if used then
         globals.set_int(CCBL0, chipsVal)
@@ -1084,13 +1145,41 @@ end)
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 CollectiblesMenu = makeOnlineTab(L7NEG:add_tab("Collectibles"))
-CollectiblesMenu:add_button("Collect All Action Figures", function() for i = 0, 99 do stats.set_bool(MPX() .. "PROP_FIGURE_" .. i, true) end end)
-CollectiblesMenu:add_button("Collect All Signal Jammers", function() for i = 0, 49 do stats.set_bool(MPX() .. "JAMMER_IDENTIFIED_" .. i, true) end end)
-CollectiblesMenu:add_button("Collect All Playing Cards", function() for i = 0, 53 do stats.set_bool(MPX() .. "CH_CARD_ID_" .. i, true) end end)
-CollectiblesMenu:add_button("Collect All Props", function() for i = 0, 9 do stats.set_bool(MPX() .. "PROP_HIDDEN_SOL_ID_" .. i, true) end end)
-CollectiblesMenu:add_button("Collect All Movie Props", function() for i = 1, 10 do stats.set_int(MPX() .. "MOVIE_PROP_COLLECTED_" .. i, -1) end end)
-CollectiblesMenu:add_button("Collect All LD Organics", function() for i = 0, 99 do stats.set_bool(MPX() .. "LD_ORGANIC_COLLECTED_" .. i, true) end end)
-CollectiblesMenu:add_button("Collect Ghost Exposed", function() for i = 0, 9 do stats.set_bool(MPX() .. "GHOST_EXPOSED_" .. i, true) end end)
+CollectiblesMenu:add_button("Collect All Action Figures", function()
+    for i = 0, 99 do
+        stats.set_bool(MPX() .. "PROP_FIGURE_" .. i, true)
+    end
+end)
+CollectiblesMenu:add_button("Collect All Signal Jammers", function()
+    for i = 0, 49 do
+        stats.set_bool(MPX() .. "JAMMER_IDENTIFIED_" .. i, true)
+    end
+end)
+CollectiblesMenu:add_button("Collect All Playing Cards", function()
+    for i = 0, 53 do
+        stats.set_bool(MPX() .. "CH_CARD_ID_" .. i, true)
+    end
+end)
+CollectiblesMenu:add_button("Collect All Props", function()
+    for i = 0, 9 do
+        stats.set_bool(MPX() .. "PROP_HIDDEN_SOL_ID_" .. i, true)
+    end
+end)
+CollectiblesMenu:add_button("Collect All Movie Props", function()
+    for i = 1, 10 do
+        stats.set_int(MPX() .. "MOVIE_PROP_COLLECTED_" .. i, -1)
+    end
+end)
+CollectiblesMenu:add_button("Collect All LD Organics", function()
+    for i = 0, 99 do
+        stats.set_bool(MPX() .. "LD_ORGANIC_COLLECTED_" .. i, true)
+    end
+end)
+CollectiblesMenu:add_button("Collect Ghost Exposed", function()
+    for i = 0, 9 do
+        stats.set_bool(MPX() .. "GHOST_EXPOSED_" .. i, true)
+    end
+end)
 
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -1165,7 +1254,13 @@ halloweenWeatherMenu:add_imgui(function()
     if hour12 == 0 then
         hour12 = 12
     end
-    ImGui.TextColored(1.0, 0.8, 0.0, 1.0, "Current In-Game Time: " .. string.format("%02d:%02d %s", hour12, minute, ampm))
+    ImGui.TextColored(
+        1.0,
+        0.8,
+        0.0,
+        1.0,
+        "Current In-Game Time: " .. string.format("%02d:%02d %s", hour12, minute, ampm)
+    )
     if hour >= 19 or hour < 7 then
         ImGui.TextColored(0.0, 1.0, 0.0, 1.0, "Status: Halloween weather is available NOW")
     else
@@ -1174,7 +1269,6 @@ halloweenWeatherMenu:add_imgui(function()
     end
     ImGui.Separator()
 end)
-
 
 HALLOWEATHERC = halloweenWeatherMenu:add_checkbox("Enable")
 
@@ -1232,7 +1326,9 @@ TRICKORTREATCB = trickOrTreatMenu:add_checkbox("Trick or Treat")
 
 -- Add help marker for the checkbox
 trickOrTreatMenu:add_imgui(function()
-    trick_help_marker("Enables the Trick or Treat event. This allows you to collect Halloween pumpkins from the Halloween event.")
+    trick_help_marker(
+        "Enables the Trick or Treat event. This allows you to collect Halloween pumpkins from the Halloween event."
+    )
 end)
 
 script.register_looped("trick_or_treat", function(script)
@@ -1461,14 +1557,17 @@ jackolantern_selected_loc = 0
 trickOrTreatMenu:add_imgui(function()
     ImGui.Separator()
     ImGui.Text("Jack o'Lantern Teleports")
-    trick_help_marker("Teleport to any of the 200 Jack o'Lantern collectible locations. These are Halloween pumpkins that spawn during the event.")
+    trick_help_marker(
+        "Teleport to any of the 200 Jack o'Lantern collectible locations. These are Halloween pumpkins that spawn during the event."
+    )
     ImGui.Separator()
-    
+
     ImGui.Text("Select Jack o'Lantern Location:")
     trick_help_marker("Choose a location from the dropdown list to teleport to.")
 
     ImGui.SetNextItemWidth(265)
-    jackolantern_selected_loc = ImGui.Combo("##jackolantern_selected_loc", jackolantern_selected_loc, jackolantern_names, 200)
+    jackolantern_selected_loc =
+        ImGui.Combo("##jackolantern_selected_loc", jackolantern_selected_loc, jackolantern_names, 200)
 
     ImGui.SameLine()
 
@@ -1489,14 +1588,14 @@ trickOrTreatMenu:add_imgui(function()
         if i % 5 == 0 then
             ImGui.Text("  ")
         end
-        
+
         if ImGui.Button(jackolantern_names[i + 1]) then
             script.run_in_fiber(function()
                 local coords = jackolantern_locations[i + 1]
                 PED.SET_PED_COORDS_KEEP_VEHICLE(self.get_ped(), coords.x, coords.y, coords.z)
             end)
         end
-        
+
         if i % 5 ~= 4 and i < 19 then
             ImGui.SameLine()
         end
@@ -1511,14 +1610,14 @@ trickOrTreatMenu:add_imgui(function()
         if i % 5 == 0 then
             ImGui.Text("  ")
         end
-        
+
         if ImGui.Button(jackolantern_names[i + 1]) then
             script.run_in_fiber(function()
                 local coords = jackolantern_locations[i + 1]
                 PED.SET_PED_COORDS_KEEP_VEHICLE(self.get_ped(), coords.x, coords.y, coords.z)
             end)
         end
-        
+
         if i % 5 ~= 4 and i < 39 then
             ImGui.SameLine()
         end
@@ -1526,7 +1625,7 @@ trickOrTreatMenu:add_imgui(function()
 
     ImGui.Separator()
     ImGui.Text("Total Jack o'Lantern Locations: 200")
-    
+
     if ImGui.Button("Teleport to Random Jack o'Lantern") then
         script.run_in_fiber(function()
             local random_index = math.random(1, 200)
@@ -1609,7 +1708,9 @@ SNOWMENCB = snowmenMenu:add_checkbox("Enable Snowmen Collectibles")
 
 -- Add help marker for the checkbox
 snowmenMenu:add_imgui(function()
-    snowmen_help_marker("Enables the Snowmen Collectibles event. This allows you to collect snowmen by blowing them up or driving your car through them during the winter event.")
+    snowmen_help_marker(
+        "Enables the Snowmen Collectibles event. This allows you to collect snowmen by blowing them up or driving your car through them during the winter event."
+    )
 end)
 
 script.register_looped("snowmen_collectibles", function(script)
@@ -1626,9 +1727,11 @@ end)
 snowmenMenu:add_imgui(function()
     ImGui.Separator()
     ImGui.Text("Snowman Teleports")
-    snowmen_help_marker("Teleport to any of the 25 Snowman collectible locations. These are snowmen that spawn during the winter event. You can destroy them by blowing them up or driving through them with your vehicle.")
+    snowmen_help_marker(
+        "Teleport to any of the 25 Snowman collectible locations. These are snowmen that spawn during the winter event. You can destroy them by blowing them up or driving through them with your vehicle."
+    )
     ImGui.Separator()
-    
+
     ImGui.Text("Select Snowman Location:")
     snowmen_help_marker("Choose a location from the dropdown list to teleport to.")
 
@@ -1647,21 +1750,23 @@ snowmenMenu:add_imgui(function()
 
     ImGui.Separator()
     ImGui.Text("Quick Teleport Buttons:")
-    snowmen_help_marker("Quickly teleport to any Snowman location to destroy them by blowing them up or driving through them.")
+    snowmen_help_marker(
+        "Quickly teleport to any Snowman location to destroy them by blowing them up or driving through them."
+    )
 
     -- Add quick teleport buttons in rows of 5
     for i = 0, 24 do
         if i % 5 == 0 then
             ImGui.Text("  ")
         end
-        
+
         if ImGui.Button(snowmen_names[i + 1]) then
             script.run_in_fiber(function()
                 local coords = snowmen_locations[i + 1]
                 PED.SET_PED_COORDS_KEEP_VEHICLE(self.get_ped(), coords.x, coords.y, coords.z)
             end)
         end
-        
+
         if i % 5 ~= 4 and i < 24 then
             ImGui.SameLine()
         end
@@ -1669,7 +1774,7 @@ snowmenMenu:add_imgui(function()
 
     ImGui.Separator()
     ImGui.Text("Total Snowman Locations: 25")
-    
+
     if ImGui.Button("Teleport to Random Snowman") then
         script.run_in_fiber(function()
             local random_index = math.random(1, 25)
@@ -1678,7 +1783,9 @@ snowmenMenu:add_imgui(function()
             gui.show_message("Snowman", "Teleported to " .. snowmen_names[random_index])
         end)
     end
-    snowmen_help_marker("Teleports you to a random Snowman location. Blow them up or drive through them to collect them all!")
+    snowmen_help_marker(
+        "Teleports you to a random Snowman location. Blow them up or drive through them to collect them all!"
+    )
 end)
 
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -1720,6 +1827,7 @@ yeti_locations = {
     vec3:new(-1282.18, 4487.826, 12.643),
     vec3:new(-1569.665, 4478.485, 20.215),
     vec3:new(-1345.828, 4838.062, 137.522),
+    vec3:new(-1507.88, 4730.23, 45.54),
 }
 
 -- Yeti location names
@@ -1729,7 +1837,8 @@ yeti_names = {
     "Clue Location 3",
     "Clue Location 4",
     "Clue Location 5",
-    "Yeti Fight Location",
+    "Yeti Fight Location (1)",
+    "Yeti Fight Location (2)",
 }
 
 -- Variables
@@ -1740,7 +1849,9 @@ YETIHUNTCB = YetiHuntMenu:add_checkbox("Enable Yeti Hunt Event")
 
 -- Add help marker for the checkbox
 YetiHuntMenu:add_imgui(function()
-    yeti_help_marker("Enables the Yeti Hunt event. This allows you to hunt the Yeti and collect clues during the event.")
+    yeti_help_marker(
+        "Enables the Yeti Hunt event. This allows you to hunt the Yeti and collect clues during the event."
+    )
 end)
 
 script.register_looped("yeti_hunt", function(script)
@@ -1756,14 +1867,14 @@ end)
 YetiHuntMenu:add_imgui(function()
     ImGui.Separator()
     ImGui.Text("Yeti Hunt Teleports")
-    yeti_help_marker("Teleport to any of the Yeti Hunt clue locations or the final Yeti fight location.")
+    yeti_help_marker("Teleport to any of the Yeti Hunt clue locations or the final Yeti fight locations.")
     ImGui.Separator()
-    
+
     ImGui.Text("Select Yeti Location:")
     yeti_help_marker("Choose a location from the dropdown list to teleport to.")
 
     ImGui.SetNextItemWidth(265)
-    yeti_selected_loc = ImGui.Combo("##yeti_selected_loc", yeti_selected_loc, yeti_names, 6)
+    yeti_selected_loc = ImGui.Combo("##yeti_selected_loc", yeti_selected_loc, yeti_names, 7)
 
     ImGui.SameLine()
 
@@ -1777,32 +1888,32 @@ YetiHuntMenu:add_imgui(function()
 
     ImGui.Separator()
     ImGui.Text("Quick Teleport Buttons:")
-    yeti_help_marker("Quickly teleport to any Yeti clue location or the fight location.")
+    yeti_help_marker("Quickly teleport to any Yeti clue location or the fight locations.")
 
-    -- Add quick teleport buttons in rows of 3
-    for i = 0, 5 do
+    -- Add quick teleport buttons in rows of 3 (all 7 locations)
+    for i = 0, 6 do
         if i % 3 == 0 then
             ImGui.Text("  ")
         end
-        
+
         if ImGui.Button(yeti_names[i + 1]) then
             script.run_in_fiber(function()
                 local coords = yeti_locations[i + 1]
                 PED.SET_PED_COORDS_KEEP_VEHICLE(self.get_ped(), coords.x, coords.y, coords.z)
             end)
         end
-        
-        if i % 3 ~= 2 and i < 5 then
+
+        if i % 3 ~= 2 and i < 6 then
             ImGui.SameLine()
         end
     end
 
     ImGui.Separator()
-    ImGui.Text("Total Yeti Locations: 6 (5 Clues + 1 Fight)")
-    
+    ImGui.Text("Total Yeti Locations: 7 (5 Clues + 2 Fight)")
+
     if ImGui.Button("Teleport to Random Yeti Location") then
         script.run_in_fiber(function()
-            local random_index = math.random(1, 6)
+            local random_index = math.random(1, 7)
             local coords = yeti_locations[random_index]
             PED.SET_PED_COORDS_KEEP_VEHICLE(self.get_ped(), coords.x, coords.y, coords.z)
             gui.show_message("Yeti Hunt", "Teleported to " .. yeti_names[random_index])
@@ -2965,7 +3076,9 @@ FAUT = RecoveryMenu:add_tab("Full Account Unlock Menu")
 ensureOnlineGuard(FAUT)
 
 FAUT:add_imgui(function()
-    if isOffline() then return end
+    if isOffline() then
+        return
+    end
 
     if ImGui.Button("Unlock WM 29 Pistol") then
         script.run_in_fiber(function(WM29)
@@ -3042,7 +3155,9 @@ end)
 CSU = FAUT:add_tab("Character's Stats")
 
 CSU:add_imgui(function()
-    if checkOnline() then return end
+    if checkOnline() then
+        return
+    end
 
     if ImGui.Button("Max Character Skills") then
         stats.set_int(MPX() .. "SCRIPT_INCREASE_DRIV", 100)
@@ -3061,9 +3176,10 @@ AcMenu = CSU:add_tab("Achievements")
 Acv0 = false
 AG = 4525223 + 1 --("CHEAT_ACHIEVE")
 
-
 AcMenu:add_imgui(function()
-    if isOffline() then return end
+    if isOffline() then
+        return
+    end
     if ImGui.Button("Unlock All Achievements") then
         script.run_in_fiber(function(script)
             for i = 0, 77 do
@@ -3318,11 +3434,14 @@ local weekly_objectives_global = 2732111 --("am_challenges")
 local objectives_state_global = 1574746 --("am_challenges")
 
 FAUT:add_imgui(function()
-    if isOffline() then return end
+    if isOffline() then
+        return
+    end
     if ImGui.Button("Complete All Daily & Weekly Challenges") then
         script.run_in_fiber(function(script)
             for i = 0, 2 do --Unlock all daily rewards.
-                local objective = globals.get_int(current_objectives_global + (1 + (0 * 5574)) + 681 + 4248 + (1 + (i * 3)))
+                local objective =
+                    globals.get_int(current_objectives_global + (1 + (0 * 5574)) + 681 + 4248 + (1 + (i * 3)))
                 globals.set_int(objectives_state_global + 1 + (1 + (i * 1)), objective)
             end
             globals.set_int(objectives_state_global, 1)
@@ -3420,7 +3539,12 @@ AirCargoMenu:add_separator()
 RCRT = AirCargoMenu:add_checkbox("Remove Ron's Cut")
 script.register_looped("RonCutRemover", function(script)
     script:yield()
-    if not network.is_session_started() or SCRIPT.GET_NUMBER_OF_THREADS_RUNNING_THE_SCRIPT_WITH_THIS_HASH(joaat("maintransition")) > 0 then return end
+    if
+        not network.is_session_started()
+        or SCRIPT.GET_NUMBER_OF_THREADS_RUNNING_THE_SCRIPT_WITH_THIS_HASH(joaat("maintransition")) > 0
+    then
+        return
+    end
     if RCRT:is_enabled() then
         globals.set_float(FMg + 22564, 0)
     else
@@ -3433,7 +3557,12 @@ AirCargoMenu:add_separator()
 PRPGD = AirCargoMenu:add_checkbox("Disable Player RP Gain")
 script.register_looped("PlayerRPGainDisabler", function(script)
     script:yield()
-    if not network.is_session_started() or SCRIPT.GET_NUMBER_OF_THREADS_RUNNING_THE_SCRIPT_WITH_THIS_HASH(joaat("maintransition")) > 0 then return end
+    if
+        not network.is_session_started()
+        or SCRIPT.GET_NUMBER_OF_THREADS_RUNNING_THE_SCRIPT_WITH_THIS_HASH(joaat("maintransition")) > 0
+    then
+        return
+    end
     if PRPGD:is_enabled() then
         globals.set_float(FMg + 1, 0)
     else
@@ -3506,7 +3635,9 @@ local am2 = "am_mp_peds"
 
 cratevalue = 0
 CeoManagerMenu:add_imgui(function()
-    if checkOnline() then return end
+    if checkOnline() then
+        return
+    end
     cratevalue, used = ImGui.DragInt("Crate Value", cratevalue, 10000, 0, 6000000)
     if used then
         globals.set_int(CEO1, cratevalue)
@@ -3532,7 +3663,12 @@ end)
 
 script.register_looped("yimceoloop", function(script)
     script:yield()
-    if not network.is_session_started() or SCRIPT.GET_NUMBER_OF_THREADS_RUNNING_THE_SCRIPT_WITH_THIS_HASH(joaat("maintransition")) > 0 then return end
+    if
+        not network.is_session_started()
+        or SCRIPT.GET_NUMBER_OF_THREADS_RUNNING_THE_SCRIPT_WITH_THIS_HASH(joaat("maintransition")) > 0
+    then
+        return
+    end
     -- removed useless call
     globals.set_int(CEO2, 0)
     globals.set_int(CEO3, 0)
@@ -3586,7 +3722,12 @@ IncomeEnd = 23765 --NIGHTCLUBINCOMEUPTOPOP100
 NCRSCB = NightClubSafeMenu:add_checkbox("Enable Nitghtclub $300k/5s (Safe Remote AFK)")
 script.register_looped("nightclubremotelooptest", function(script)
     script:yield()
-    if not network.is_session_started() or SCRIPT.GET_NUMBER_OF_THREADS_RUNNING_THE_SCRIPT_WITH_THIS_HASH(joaat("maintransition")) > 0 then return end
+    if
+        not network.is_session_started()
+        or SCRIPT.GET_NUMBER_OF_THREADS_RUNNING_THE_SCRIPT_WITH_THIS_HASH(joaat("maintransition")) > 0
+    then
+        return
+    end
     if NCRSCB:is_enabled() == true then
         SafeValue = 1845298 + self.get_id() + 260 + 364 + 5 --("am_mp_nightclub") or we can just use TUNEABLE: NIGHTCLUBMAXSAFEVALUE
         for i = IncomeStart, IncomeEnd do
@@ -3614,6 +3755,31 @@ end)
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 local GVMENU = makeOnlineTab(L7NEG:add_tab("Gun Van Menu "))
+
+-- Rainbow color function
+function gunvan_rainbow_color(offset)
+    local time = os.clock() * 2
+    local r = math.sin(time + offset) * 0.5 + 0.5
+    local g = math.sin(time + offset + 2.094) * 0.5 + 0.5
+    local b = math.sin(time + offset + 4.188) * 0.5 + 0.5
+    return r, g, b, 1.0
+end
+
+-- Help marker function with rainbow colored icon
+function gunvan_help_marker(text)
+    ImGui.SameLine()
+    local r, g, b, a = gunvan_rainbow_color(0)
+    ImGui.PushStyleColor(ImGuiCol.Text, r, g, b, a)
+    ImGui.Text("[?]")
+    ImGui.PopStyleColor()
+    if ImGui.IsItemHovered() then
+        ImGui.BeginTooltip()
+        ImGui.PushTextWrapPos(ImGui.GetFontSize() * 35)
+        ImGui.TextUnformatted(text)
+        ImGui.PopTextWrapPos()
+        ImGui.EndTooltip()
+    end
+end
 
 local gunvan_locations = {
     vec3:new(-29.532, 6435.136, 31.162),
@@ -3784,18 +3950,6 @@ weapon_name = ""
 
 gun_van_loc = 0
 
-function help_marker(text)
-    ImGui.SameLine()
-    ImGui.TextDisabled("(?)")
-    if ImGui.IsItemHovered() then
-        ImGui.BeginTooltip()
-        ImGui.PushTextWrapPos(ImGui.GetFontSize() * 35)
-        ImGui.TextUnformatted(text)
-        ImGui.PopTextWrapPos()
-        ImGui.EndTooltip()
-    end
-end
-
 function render_weapon_editor()
     ImGui.SetNextWindowSize(700, 420)
     ImGui.OpenPopup("Weapon Editor")
@@ -3859,7 +4013,12 @@ function render_weapon_editor()
 end
 
 script.register_looped("Gun Van", function()
-    if not network.is_session_started() or SCRIPT.GET_NUMBER_OF_THREADS_RUNNING_THE_SCRIPT_WITH_THIS_HASH(joaat("maintransition")) > 0 then return end
+    if
+        not network.is_session_started()
+        or SCRIPT.GET_NUMBER_OF_THREADS_RUNNING_THE_SCRIPT_WITH_THIS_HASH(joaat("maintransition")) > 0
+    then
+        return
+    end
     gun_van_loc = globals.get_int(2652581 + 2706)
 
     if is_typing then
@@ -3914,7 +4073,7 @@ GVMENU:add_imgui(function()
     end
 
     weapon_skins, on_tick = ImGui.Checkbox("Weapon Skins", weapon_skins)
-    help_marker("Enables the special liveries for Knife and Baseball Bat.")
+    gunvan_help_marker("Enables the special liveries for Knife and Baseball Bat.")
 
     if on_tick then
         if not weapon_skins then
@@ -3923,7 +4082,7 @@ GVMENU:add_imgui(function()
     end
 
     livery_lock, on_tick = ImGui.Checkbox("Remove Livery Lock", livery_lock)
-    help_marker(
+    gunvan_help_marker(
         "Removes the hard-coded lock on special weapon liveries, such as Season's Greetings, Employee of the Month etc."
     )
 
@@ -3938,7 +4097,7 @@ GVMENU:add_imgui(function()
     end
 
     gta_plus_blip, on_tick = ImGui.Checkbox("Blip Always Visible", gta_plus_blip)
-    help_marker("The Gun Van will always be blipped on the map, just like in GTA+.")
+    gunvan_help_marker("The Gun Van will always be blipped on the map, just like in GTA+.")
 
     if on_tick then
         if not gta_plus_blip then
@@ -3947,7 +4106,7 @@ GVMENU:add_imgui(function()
     end
 
     discount, on_tick = ImGui.Checkbox("Jewish Trade Skills (-10%)", discount)
-    help_marker("Allows 10% off off any weapon in gun van")
+    gunvan_help_marker("Allows 10% off off any weapon in gun van")
 
     if on_tick then
         if discount then
@@ -4589,963 +4748,388 @@ end
 -- ============================================================================
 -- MAIN SCRIPT
 -- ============================================================================
-    local DEFAULT_CONFIG = {
-        cashUpdgrade1 = false,
-        cashUpdgrade2 = false,
-        cokeUpdgrade1 = false,
-        cokeUpdgrade2 = false,
-        methUpdgrade1 = false,
-        methUpdgrade2 = false,
-        weedUpdgrade1 = false,
-        weedUpdgrade2 = false,
-        fdUpdgrade1 = false,
-        fdUpdgrade2 = false,
-        bunkerUpdgrade1 = false,
-        bunkerUpdgrade2 = false,
-        acidUpdgrade = false,
-    }
+local DEFAULT_CONFIG = {
+    cashUpdgrade1 = false,
+    cashUpdgrade2 = false,
+    cokeUpdgrade1 = false,
+    cokeUpdgrade2 = false,
+    methUpdgrade1 = false,
+    methUpdgrade2 = false,
+    weedUpdgrade1 = false,
+    weedUpdgrade2 = false,
+    fdUpdgrade1 = false,
+    fdUpdgrade2 = false,
+    bunkerUpdgrade1 = false,
+    bunkerUpdgrade2 = false,
+    acidUpdgrade = false,
+}
 
-    local CFG = YimConfig(DEFAULT_CONFIG)
-    log.info(string.format("Ultimate_Menu_V3_1.73_Legacy.lua: YimConfig v%s successfully loaded\n%s", CFG._version, CFG._credits))
+local CFG = YimConfig(DEFAULT_CONFIG)
+log.info(
+    string.format("Ultimate_Menu_Legacy.lua: YimConfig v%s successfully loaded\n%s", CFG._version, CFG._credits)
+)
 
-    yim_resupplier = L7NEG:add_tab("YimResupplier")
-    
-    hangarOwned = false
-    fCashOwned = false
-    cokeOwned = false
-    methOwned = false
-    weedOwned = false
-    fdOwned = false
-    bunkerOwned = false
-    acidOwned = false
-    hangarTotal = 0
-    cashTotal = 0
-    cokeTotal = 0
-    methTotal = 0
-    weedTotal = 0
-    fdTotal = 0
-    bunkerTotal = 0
-    acidTotal = 0
-    main_global = 1673807
-    cashUpdgrade1 = CFG.read("cashUpdgrade1")
-    cashUpdgrade2 = CFG.read("cashUpdgrade2")
-    cokeUpdgrade1 = CFG.read("cokeUpdgrade1")
-    cokeUpdgrade2 = CFG.read("cokeUpdgrade2")
-    methUpdgrade1 = CFG.read("methUpdgrade1")
-    methUpdgrade2 = CFG.read("methUpdgrade2")
-    weedUpdgrade1 = CFG.read("weedUpdgrade1")
-    weedUpdgrade2 = CFG.read("weedUpdgrade2")
-    fdUpdgrade1 = CFG.read("fdUpdgrade1")
-    fdUpdgrade2 = CFG.read("fdUpdgrade2")
-    bunkerUpdgrade1 = CFG.read("bunkerUpdgrade1")
-    bunkerUpdgrade2 = CFG.read("bunkerUpdgrade2")
-    acidUpdgrade = CFG.read("acidUpdgrade")
+yim_resupplier = L7NEG:add_tab("YimResupplier")
 
-    yim_resupplier:add_imgui(function()
-        if network.is_session_started() and not (SCRIPT.GET_NUMBER_OF_THREADS_RUNNING_THE_SCRIPT_WITH_THIS_HASH(joaat("maintransition")) > 0) then
-            hangarOwned = stats.get_int(MPX() .. "PROP_HANGAR") ~= 0
-            fCashOwned = stats.get_int(MPX() .. "PROP_FAC_SLOT0") ~= 0
-            cokeOwned = stats.get_int(MPX() .. "PROP_FAC_SLOT1") ~= 0
-            methOwned = stats.get_int(MPX() .. "PROP_FAC_SLOT2") ~= 0
-            weedOwned = stats.get_int(MPX() .. "PROP_FAC_SLOT3") ~= 0
-            fdOwned = stats.get_int(MPX() .. "PROP_FAC_SLOT4") ~= 0
-            bunkerOwned = stats.get_int(MPX() .. "PROP_FAC_SLOT5") ~= 0
-            acidOwned = stats.get_int(MPX() .. "PROP_FAC_SLOT6") ~= 0
-            ImGui.BeginTabBar("YimResupplier", ImGuiTabBarFlags.None)
-            if ImGui.BeginTabItem("Manage Supplies") then
-                local wh1Supplies = stats.get_int(MPX() .. "CONTOTALFORWHOUSE0") or 0
-                local wh2Supplies = stats.get_int(MPX() .. "CONTOTALFORWHOUSE1") or 0
-                local wh3Supplies = stats.get_int(MPX() .. "CONTOTALFORWHOUSE2") or 0
-                local wh4Supplies = stats.get_int(MPX() .. "CONTOTALFORWHOUSE3") or 0
-                local wh5Supplies = stats.get_int(MPX() .. "CONTOTALFORWHOUSE4") or 0
-                local hangarSupply = stats.get_int(MPX() .. "HANGAR_CONTRABAND_TOTAL") or 0
-                local cashSupply = stats.get_int(MPX() .. "MATTOTALFORFACTORY0") or 0
-                local dfSupply = stats.get_int(MPX() .. "MATTOTALFORFACTORY1") or 0
-                local methSupply = stats.get_int(MPX() .. "MATTOTALFORFACTORY2") or 0
-                local weedSupply = stats.get_int(MPX() .. "MATTOTALFORFACTORY3") or 0
-                local cokeSupply = stats.get_int(MPX() .. "MATTOTALFORFACTORY4") or 0
-                local bunkerSupply = stats.get_int(MPX() .. "MATTOTALFORFACTORY5") or 0
-                local acidSupply = stats.get_int(MPX() .. "MATTOTALFORFACTORY6") or 0
-                local ceoSupply = (wh1Supplies + wh2Supplies + wh3Supplies + wh4Supplies + wh5Supplies)
-                ImGui.Spacing()
-                ImGui.Text("Hangar Cargo")
-                ImGui.Separator()
-                if hangarOwned then
-                    ImGui.Text("Current Supplies:")
-                    ImGui.SameLine()
-                    ImGui.Dummy(10, 1)
-                    ImGui.SameLine()
-                    ImGui.ProgressBar((hangarSupply / 50), 140, 30)
-                    if hangarSupply < 50 then
-                        if ImGui.Button("Source Random Crate(s)") then
-                            script.run_in_fiber(function()
-                                stats.set_bool_masked(MPX() .. "DLC22022PSTAT_BOOL3", true, 9)
-                            end)
-                        end
-                        ImGui.SameLine()
-                        hangarLoop, used = ImGui.Checkbox("Auto-Fill", hangarLoop)
-                        if hangarLoop then
-                            script.run_in_fiber(function(hangarSupp)
-                                repeat
-                                    stats.set_bool_masked(MPX() .. "DLC22022PSTAT_BOOL3", true, 9)
-                                    hangarSupp:sleep(969)
-                                until hangarSupply == 50 or hangarLoop == false
-                            end)
-                        end
-                    else
-                        if hangarLoop then
-                            hangarLoop = false
-                        end
-                    end
-                    if INTERIOR.GET_INTERIOR_FROM_ENTITY(self.get_ped()) == 0 then
-                        if ImGui.Button("Teleport##hangar") then
-                            script.run_in_fiber(function()
-                                local hangarBlip = HUD.GET_FIRST_BLIP_INFO_ID(569)
-                                local hangarLoc
-                                if HUD.DOES_BLIP_EXIST(hangarBlip) then
-                                    hangarLoc = HUD.GET_BLIP_COORDS(hangarBlip)
-                                    selfTP(true, false, hangarLoc)
-                                end
-                            end)
-                        end
-                    end
-                else
-                    ImGui.Text("You don't own a Hangar.")
-                end
-                ImGui.Spacing()
-                ImGui.Text("CEO Warehouses")
-                ImGui.Separator()
+hangarOwned = false
+fCashOwned = false
+cokeOwned = false
+methOwned = false
+weedOwned = false
+fdOwned = false
+bunkerOwned = false
+acidOwned = false
+hangarTotal = 0
+cashTotal = 0
+cokeTotal = 0
+methTotal = 0
+weedTotal = 0
+fdTotal = 0
+bunkerTotal = 0
+acidTotal = 0
+main_global = 1673807
+cashUpdgrade1 = CFG.read("cashUpdgrade1")
+cashUpdgrade2 = CFG.read("cashUpdgrade2")
+cokeUpdgrade1 = CFG.read("cokeUpdgrade1")
+cokeUpdgrade2 = CFG.read("cokeUpdgrade2")
+methUpdgrade1 = CFG.read("methUpdgrade1")
+methUpdgrade2 = CFG.read("methUpdgrade2")
+weedUpdgrade1 = CFG.read("weedUpdgrade1")
+weedUpdgrade2 = CFG.read("weedUpdgrade2")
+fdUpdgrade1 = CFG.read("fdUpdgrade1")
+fdUpdgrade2 = CFG.read("fdUpdgrade2")
+bunkerUpdgrade1 = CFG.read("bunkerUpdgrade1")
+bunkerUpdgrade2 = CFG.read("bunkerUpdgrade2")
+acidUpdgrade = CFG.read("acidUpdgrade")
+
+yim_resupplier:add_imgui(function()
+    if
+        network.is_session_started()
+        and not (SCRIPT.GET_NUMBER_OF_THREADS_RUNNING_THE_SCRIPT_WITH_THIS_HASH(joaat("maintransition")) > 0)
+    then
+        hangarOwned = stats.get_int(MPX() .. "PROP_HANGAR") ~= 0
+        fCashOwned = stats.get_int(MPX() .. "PROP_FAC_SLOT0") ~= 0
+        cokeOwned = stats.get_int(MPX() .. "PROP_FAC_SLOT1") ~= 0
+        methOwned = stats.get_int(MPX() .. "PROP_FAC_SLOT2") ~= 0
+        weedOwned = stats.get_int(MPX() .. "PROP_FAC_SLOT3") ~= 0
+        fdOwned = stats.get_int(MPX() .. "PROP_FAC_SLOT4") ~= 0
+        bunkerOwned = stats.get_int(MPX() .. "PROP_FAC_SLOT5") ~= 0
+        acidOwned = stats.get_int(MPX() .. "PROP_FAC_SLOT6") ~= 0
+        ImGui.BeginTabBar("YimResupplier", ImGuiTabBarFlags.None)
+        if ImGui.BeginTabItem("Manage Supplies") then
+            local wh1Supplies = stats.get_int(MPX() .. "CONTOTALFORWHOUSE0") or 0
+            local wh2Supplies = stats.get_int(MPX() .. "CONTOTALFORWHOUSE1") or 0
+            local wh3Supplies = stats.get_int(MPX() .. "CONTOTALFORWHOUSE2") or 0
+            local wh4Supplies = stats.get_int(MPX() .. "CONTOTALFORWHOUSE3") or 0
+            local wh5Supplies = stats.get_int(MPX() .. "CONTOTALFORWHOUSE4") or 0
+            local hangarSupply = stats.get_int(MPX() .. "HANGAR_CONTRABAND_TOTAL") or 0
+            local cashSupply = stats.get_int(MPX() .. "MATTOTALFORFACTORY0") or 0
+            local dfSupply = stats.get_int(MPX() .. "MATTOTALFORFACTORY1") or 0
+            local methSupply = stats.get_int(MPX() .. "MATTOTALFORFACTORY2") or 0
+            local weedSupply = stats.get_int(MPX() .. "MATTOTALFORFACTORY3") or 0
+            local cokeSupply = stats.get_int(MPX() .. "MATTOTALFORFACTORY4") or 0
+            local bunkerSupply = stats.get_int(MPX() .. "MATTOTALFORFACTORY5") or 0
+            local acidSupply = stats.get_int(MPX() .. "MATTOTALFORFACTORY6") or 0
+            local ceoSupply = (wh1Supplies + wh2Supplies + wh3Supplies + wh4Supplies + wh5Supplies)
+            ImGui.Spacing()
+            ImGui.Text("Hangar Cargo")
+            ImGui.Separator()
+            if hangarOwned then
                 ImGui.Text("Current Supplies:")
                 ImGui.SameLine()
                 ImGui.Dummy(10, 1)
                 ImGui.SameLine()
-                ImGui.ProgressBar((ceoSupply / 555), 140, 30)
-                if ceoSupply < 555 then
-                    if ImGui.Button("Source Random Crate(s)##ceo") then
-                        script.run_in_fiber(function(fillceo)
-                            for i = 12, 16 do
-                                stats.set_bool_masked(MPX() .. "FIXERPSTAT_BOOL1", true, i)
-                                fillceo:sleep(500)
-                            end
+                ImGui.ProgressBar((hangarSupply / 50), 140, 30)
+                if hangarSupply < 50 then
+                    if ImGui.Button("Source Random Crate(s)") then
+                        script.run_in_fiber(function()
+                            stats.set_bool_masked(MPX() .. "DLC22022PSTAT_BOOL3", true, 9)
                         end)
                     end
                     ImGui.SameLine()
-                    ceoLoop, used = ImGui.Checkbox("Auto-Fill##ceo", ceoLoop)
-                    if ceoLoop then
-                        script.run_in_fiber(function(ceoloop)
+                    hangarLoop, used = ImGui.Checkbox("Auto-Fill", hangarLoop)
+                    if hangarLoop then
+                        script.run_in_fiber(function(hangarSupp)
                             repeat
-                                for i = 12, 16 do
-                                    stats.set_bool_masked(MPX() .. "FIXERPSTAT_BOOL1", true, i)
-                                    ceoloop:sleep(500)
-                                end
-                                ceoloop:sleep(969)
-                            until ceoSupply == 555 or ceoLoop == false
+                                stats.set_bool_masked(MPX() .. "DLC22022PSTAT_BOOL3", true, 9)
+                                hangarSupp:sleep(969)
+                            until hangarSupply == 50 or hangarLoop == false
                         end)
                     end
                 else
-                    if ceoLoop then
-                        ceoLoop = false
+                    if hangarLoop then
+                        hangarLoop = false
                     end
                 end
                 if INTERIOR.GET_INTERIOR_FROM_ENTITY(self.get_ped()) == 0 then
-                    if ImGui.Button("Teleport To Office") then
+                    if ImGui.Button("Teleport##hangar") then
                         script.run_in_fiber(function()
-                            local ceoBlip = HUD.GET_FIRST_BLIP_INFO_ID(475)
-                            local ceoLoc
-                            if HUD.DOES_BLIP_EXIST(ceoBlip) then
-                                ceoLoc = HUD.GET_BLIP_COORDS(ceoBlip)
-                                selfTP(true, false, ceoLoc)
+                            local hangarBlip = HUD.GET_FIRST_BLIP_INFO_ID(569)
+                            local hangarLoc
+                            if HUD.DOES_BLIP_EXIST(hangarBlip) then
+                                hangarLoc = HUD.GET_BLIP_COORDS(hangarBlip)
+                                selfTP(true, false, hangarLoc)
                             end
                         end)
                     end
                 end
-                ImGui.Spacing()
-                ImGui.Text("MC Supplies")
-                ImGui.Separator()
-                if fCashOwned then
-                    ImGui.Text("Fake Cash:")
-                    ImGui.SameLine()
-                    ImGui.Dummy(55, 1)
-                    ImGui.SameLine()
-                    ImGui.ProgressBar((cashSupply / 100), 140, 30)
-                    if math.ceil(cashSupply) < 100 then
-                        ImGui.SameLine()
-                        if ImGui.Button(" Fill ##FakeCash") then
-                            globals.set_int(main_global + 0 + 1, 1)
-                        end
-                        ImGui.SameLine()
-                        ImGui.Dummy(5, 1)
-                    end
-                    if INTERIOR.GET_INTERIOR_FROM_ENTITY(self.get_ped()) == 0 then
-                        ImGui.SameLine()
-                        if ImGui.Button("Teleport##fc") then
-                            script.run_in_fiber(function()
-                                local fcBlip = HUD.GET_FIRST_BLIP_INFO_ID(500)
-                                local fcLoc
-                                if HUD.DOES_BLIP_EXIST(fcBlip) then
-                                    fcLoc = HUD.GET_BLIP_COORDS(fcBlip)
-                                    selfTP(false, false, fcLoc)
-                                end
-                            end)
-                        end
-                    end
-                else
-                    ImGui.Text("You don't own a Fake Cash business.")
-                end
-                if cokeOwned then
-                    ImGui.Text("Cocaine:")
-                    ImGui.SameLine()
-                    ImGui.Dummy(73, 1)
-                    ImGui.SameLine()
-                    ImGui.ProgressBar((cokeSupply / 100), 140, 30)
-                    if math.ceil(cokeSupply) < 100 then
-                        ImGui.SameLine()
-                        if ImGui.Button(" Fill ##Cocaine") then
-                            globals.set_int(main_global + 4 + 1, 1)
-                        end
-                        ImGui.SameLine()
-                        ImGui.Dummy(5, 1)
-                    end
-                    if INTERIOR.GET_INTERIOR_FROM_ENTITY(self.get_ped()) == 0 then
-                        ImGui.SameLine()
-                        if ImGui.Button("Teleport##coke") then
-                            script.run_in_fiber(function()
-                                local cokeBlip = HUD.GET_FIRST_BLIP_INFO_ID(497)
-                                local cokeLoc
-                                if HUD.DOES_BLIP_EXIST(cokeBlip) then
-                                    cokeLoc = HUD.GET_BLIP_COORDS(cokeBlip)
-                                    selfTP(false, false, cokeLoc)
-                                end
-                            end)
-                        end
-                    end
-                else
-                    ImGui.Text("You don't own a Cocaine business.")
-                end
-                if methOwned then
-                    ImGui.Text("Meth:")
-                    ImGui.SameLine()
-                    ImGui.Dummy(95, 1)
-                    ImGui.SameLine()
-                    ImGui.ProgressBar((methSupply / 100), 140, 30)
-                    if math.ceil(methSupply) < 100 then
-                        ImGui.SameLine()
-                        if ImGui.Button(" Fill ##Meth") then
-                            globals.set_int(main_global + 2 + 1, 1)
-                        end
-                        ImGui.SameLine()
-                        ImGui.Dummy(5, 1)
-                    end
-                    if INTERIOR.GET_INTERIOR_FROM_ENTITY(self.get_ped()) == 0 then
-                        ImGui.SameLine()
-                        if ImGui.Button("Teleport##meth") then
-                            script.run_in_fiber(function()
-                                local methBlip = HUD.GET_FIRST_BLIP_INFO_ID(499)
-                                local methLoc
-                                if HUD.DOES_BLIP_EXIST(methBlip) then
-                                    methLoc = HUD.GET_BLIP_COORDS(methBlip)
-                                    selfTP(false, false, methLoc)
-                                end
-                            end)
-                        end
-                    end
-                else
-                    ImGui.Text("You don't own a Meth business.")
-                end
-                if weedOwned then
-                    ImGui.Text("Weed:")
-                    ImGui.SameLine()
-                    ImGui.Dummy(90, 1)
-                    ImGui.SameLine()
-                    ImGui.ProgressBar((weedSupply / 100), 140, 30)
-                    if math.ceil(weedSupply) < 100 then
-                        ImGui.SameLine()
-                        if ImGui.Button(" Fill ##Weed") then
-                            globals.set_int(main_global + 3 + 1, 1)
-                        end
-                        ImGui.SameLine()
-                        ImGui.Dummy(5, 1)
-                    end
-                    if INTERIOR.GET_INTERIOR_FROM_ENTITY(self.get_ped()) == 0 then
-                        ImGui.SameLine()
-                        if ImGui.Button("Teleport##weed") then
-                            script.run_in_fiber(function()
-                                local weedBlip = HUD.GET_FIRST_BLIP_INFO_ID(496)
-                                local weedLoc
-                                if HUD.DOES_BLIP_EXIST(weedBlip) then
-                                    weedLoc = HUD.GET_BLIP_COORDS(weedBlip)
-                                    selfTP(false, false, weedLoc)
-                                end
-                            end)
-                        end
-                    end
-                else
-                    ImGui.Text("You don't own a Weed business.")
-                end
-                if fdOwned then
-                    ImGui.Text("Document Forgery: ")
-                    ImGui.SameLine()
-                    ImGui.ProgressBar((dfSupply / 100), 140, 30)
-                    if math.ceil(dfSupply) < 100 then
-                        ImGui.SameLine()
-                        if ImGui.Button(" Fill ##DocumentForgery") then
-                            globals.set_int(main_global + 1 + 1, 1)
-                        end
-                        ImGui.SameLine()
-                        ImGui.Dummy(5, 1)
-                    end
-                    if INTERIOR.GET_INTERIOR_FROM_ENTITY(self.get_ped()) == 0 then
-                        ImGui.SameLine()
-                        if ImGui.Button("Teleport##fd") then
-                            script.run_in_fiber(function()
-                                local fdBlip = HUD.GET_FIRST_BLIP_INFO_ID(498)
-                                local fdLoc
-                                if HUD.DOES_BLIP_EXIST(fdBlip) then
-                                    fdLoc = HUD.GET_BLIP_COORDS(fdBlip)
-                                    selfTP(false, false, fdLoc)
-                                end
-                            end)
-                        end
-                    end
-                else
-                    ImGui.Text("You don't own a Document Forgery office.")
-                end
-                if bunkerOwned then
-                    ImGui.Text("Bunker:")
-                    ImGui.SameLine()
-                    ImGui.Dummy(80, 1)
-                    ImGui.SameLine()
-                    ImGui.ProgressBar((bunkerSupply / 100), 140, 30)
-                    if math.ceil(bunkerSupply) < 100 then
-                        ImGui.SameLine()
-                        if ImGui.Button(" Fill ##Bunker") then
-                            globals.set_int(main_global + 5 + 1, 1)
-                        end
-                        ImGui.SameLine()
-                        ImGui.Dummy(5, 1)
-                    end
-                    if INTERIOR.GET_INTERIOR_FROM_ENTITY(self.get_ped()) == 0 then
-                        ImGui.SameLine()
-                        if ImGui.Button("Teleport##bunker") then
-                            script.run_in_fiber(function()
-                                local bunkerBlip = HUD.GET_FIRST_BLIP_INFO_ID(557)
-                                local bunkerLoc
-                                if HUD.DOES_BLIP_EXIST(bunkerBlip) then
-                                    bunkerLoc = HUD.GET_BLIP_COORDS(bunkerBlip)
-                                    selfTP(true, false, bunkerLoc)
-                                end
-                            end)
-                        end
-                    end
-                else
-                    ImGui.Text("You don't own a Bunker.")
-                end
-                if acidOwned then
-                    ImGui.Text("Acid Lab:")
-                    ImGui.SameLine()
-                    ImGui.Dummy(70, 1)
-                    ImGui.SameLine()
-                    ImGui.ProgressBar((acidSupply / 100), 140, 30)
-                    if math.ceil(acidSupply) < 100 then
-                        ImGui.SameLine()
-                        if ImGui.Button(" Fill ##AcidLab") then
-                            globals.set_int(main_global + 6 + 1, 1)
-                        end
-                        ImGui.SameLine()
-                        ImGui.Dummy(5, 1)
-                    end
-                    if INTERIOR.GET_INTERIOR_FROM_ENTITY(self.get_ped()) == 0 then
-                        ImGui.SameLine()
-                        if ImGui.Button("Teleport##acid") then
-                            script.run_in_fiber(function()
-                                local acidBlip = HUD.GET_FIRST_BLIP_INFO_ID(848)
-                                local acidLoc
-                                if HUD.DOES_BLIP_EXIST(acidBlip) then
-                                    acidLoc = HUD.GET_BLIP_COORDS(acidBlip)
-                                    selfTP(true, false, acidLoc)
-                                end
-                            end)
-                        end
-                    end
-                    if INTERIOR.GET_INTERIOR_FROM_ENTITY(self.get_ped()) == 0 then
-                        ImGui.Dummy(1, 10)
-                        coloredText(
-                            "WARNING!\10Teleport buttons might be broken in public sessions.",
-                            40,
-                            { 255, 204, 0, 0.8 }
-                        )
-                    end
-                else
-                    ImGui.Text("You don't own an Acid Lab.")
-                end
-                ImGui.EndTabItem()
+            else
+                ImGui.Text("You don't own a Hangar.")
             end
-            if ImGui.BeginTabItem("Production Overview") then
-                --------------------------------------- Hangar ----------------------------------------------------------------------
-                if hangarOwned then
-                    ImGui.Text("Hangar:")
-                    local hangarCargo = stats.get_int(MPX() .. "HANGAR_CONTRABAND_TOTAL") or 0
-                    hangarTotal = hangarCargo * 30000
-                    ImGui.Text("Product:")
-                    ImGui.SameLine()
-                    ImGui.Dummy(5, 1)
-                    ImGui.SameLine()
-                    ImGui.ProgressBar(
-                        (hangarCargo / 50),
-                        160,
-                        25,
-                        tostring(hangarCargo) .. " Crates (" .. tostring(math.floor(hangarCargo / 0.5)) .. "%)"
-                    )
-                    ImGui.SameLine()
-                    ImGui.Dummy(10, 1)
-                    ImGui.SameLine()
-                    ImGui.Text("Value:")
-                    ImGui.SameLine()
-                    ImGui.Text(formatMoney(hangarTotal))
+            ImGui.Spacing()
+            ImGui.Text("CEO Warehouses")
+            ImGui.Separator()
+            ImGui.Text("Current Supplies:")
+            ImGui.SameLine()
+            ImGui.Dummy(10, 1)
+            ImGui.SameLine()
+            ImGui.ProgressBar((ceoSupply / 555), 140, 30)
+            if ceoSupply < 555 then
+                if ImGui.Button("Source Random Crate(s)##ceo") then
+                    script.run_in_fiber(function(fillceo)
+                        for i = 12, 16 do
+                            stats.set_bool_masked(MPX() .. "FIXERPSTAT_BOOL1", true, i)
+                            fillceo:sleep(500)
+                        end
+                    end)
                 end
-                --------------------------------------- CEO ----------------------------------------------------------------------
-                ImGui.Separator()
-                ImGui.Text("CEO:")
-                local wh1Supplies = stats.get_int(MPX() .. "CONTOTALFORWHOUSE0") or 0
-                local wh2Supplies = stats.get_int(MPX() .. "CONTOTALFORWHOUSE1") or 0
-                local wh3Supplies = stats.get_int(MPX() .. "CONTOTALFORWHOUSE2") or 0
-                local wh4Supplies = stats.get_int(MPX() .. "CONTOTALFORWHOUSE3") or 0
-                local wh5Supplies = stats.get_int(MPX() .. "CONTOTALFORWHOUSE4") or 0
-                if wh1Supplies ~= nil and wh1Supplies > 0 then
-                    wh1Value = (globals.get_int(262145 + (getCEOvalue_G(wh1Supplies))))
-                else
-                    wh1Value = 0
-                end
-                if wh2Supplies ~= nil and wh2Supplies > 0 then
-                    wh2Value = (globals.get_int(262145 + (getCEOvalue_G(wh2Supplies))))
-                else
-                    wh2Value = 0
-                end
-                if wh3Supplies ~= nil and wh3Supplies > 0 then
-                    wh3Value = (globals.get_int(262145 + (getCEOvalue_G(wh3Supplies))))
-                else
-                    wh3Value = 0
-                end
-                if wh4Supplies ~= nil and wh4Supplies > 0 then
-                    wh4Value = (globals.get_int(262145 + (getCEOvalue_G(wh4Supplies))))
-                else
-                    wh4Value = 0
-                end
-                if wh5Supplies ~= nil and wh5Supplies > 0 then
-                    wh5Value = (globals.get_int(262145 + (getCEOvalue_G(wh5Supplies))))
-                else
-                    wh5Value = 0
-                end
-                local ceoSupply = (wh1Supplies + wh2Supplies + wh3Supplies + wh4Supplies + wh5Supplies)
-                ceoTotal = (
-                    (wh1Value * wh1Supplies)
-                    + (wh2Value * wh2Supplies)
-                    + (wh3Value * wh3Supplies)
-                    + (wh4Value * wh4Supplies)
-                    + (wh5Value * wh5Supplies)
-                )
-                ImGui.Text("Product:")
                 ImGui.SameLine()
-                ImGui.Dummy(5, 1)
-                ImGui.SameLine()
-                ImGui.ProgressBar(
-                    (ceoSupply / 555),
-                    160,
-                    25,
-                    tostring(ceoSupply) .. " Crates (" .. tostring(math.floor((ceoSupply / 555) * 100)) .. "%)"
-                )
-                ImGui.SameLine()
-                ImGui.Dummy(10, 1)
-                ImGui.SameLine()
-                ImGui.Text("Value:")
-                ImGui.SameLine()
-                ImGui.Text(formatMoney(ceoTotal))
-                --------------------------------------- Fake Cash -------------------------------------------------------------------
-                if fCashOwned then
-                    ImGui.Separator()
-                    ImGui.Text("Fake Cash:")
-                    ImGui.SameLine()
-                    cashUpdgrade1, used = ImGui.Checkbox("Equipment Upgrade##cash", cashUpdgrade1)
-                    ImGui.SameLine()
-                    if used then
-                        CFG.save("cashUpdgrade1", cashUpdgrade1)
-                    end
-                    cashUpdgrade2, used = ImGui.Checkbox("Staff Upgrade##cash", cashUpdgrade2)
-                    if used then
-                        CFG.save("cashUpdgrade2", cashUpdgrade2)
-                    end
-                    if cashUpdgrade1 then
-                        cashOffset1 = globals.get_int(262145 + 17415)
-                    else
-                        cashOffset1 = 0
-                    end
-                    if cashUpdgrade2 then
-                        cashOffset2 = globals.get_int(262145 + 17421)
-                    else
-                        cashOffset2 = 0
-                    end
-                    local cashProduct = stats.get_int(MPX() .. "PRODTOTALFORFACTORY0") or 0
-                    cashTotal = ((globals.get_int(262145 + 17409) + cashOffset1 + cashOffset2) * cashProduct)
-                    ImGui.Text("Product:")
-                    ImGui.SameLine()
-                    ImGui.Dummy(5, 1)
-                    ImGui.SameLine()
-                    ImGui.ProgressBar(
-                        (cashProduct / 40),
-                        160,
-                        25,
-                        tostring(cashProduct) .. " Boxes (" .. tostring(math.floor(cashProduct * 2.5)) .. "%)"
-                    )
-                    ImGui.SameLine()
-                    ImGui.Dummy(10, 1)
-                    ImGui.SameLine()
-                    ImGui.Text("Value:")
-                    ImGui.SameLine()
-                    ImGui.Text(formatMoney(cashTotal))
+                ceoLoop, used = ImGui.Checkbox("Auto-Fill##ceo", ceoLoop)
+                if ceoLoop then
+                    script.run_in_fiber(function(ceoloop)
+                        repeat
+                            for i = 12, 16 do
+                                stats.set_bool_masked(MPX() .. "FIXERPSTAT_BOOL1", true, i)
+                                ceoloop:sleep(500)
+                            end
+                            ceoloop:sleep(969)
+                        until ceoSupply == 555 or ceoLoop == false
+                    end)
                 end
-                ---------------------------------------Coke----------------------------------------------------------------------
-                if cokeOwned then
-                    ImGui.Separator()
-                    ImGui.Text("Cocaine:    ")
-                    ImGui.SameLine()
-                    cokeUpdgrade1, used = ImGui.Checkbox("Equipment Upgrade##coke", cokeUpdgrade1)
-                    ImGui.SameLine()
-                    if used then
-                        CFG.save("cokeUpdgrade1", cokeUpdgrade1)
-                    end
-                    cokeUpdgrade2, used = ImGui.Checkbox("Staff Upgrade##coke", cokeUpdgrade2)
-                    if used then
-                        CFG.save("cokeUpdgrade2", cokeUpdgrade2)
-                    end
-                    if cokeUpdgrade1 then
-                        cokeOffset1 = globals.get_int(262145 + 17416)
-                    else
-                        cokeOffset1 = 0
-                    end
-                    if cokeUpdgrade2 then
-                        cokeOffset2 = globals.get_int(262145 + 17422)
-                    else
-                        cokeOffset2 = 0
-                    end
-                    local cokeProduct = stats.get_int(MPX() .. "PRODTOTALFORFACTORY1") or 0
-                    cokeTotal = ((globals.get_int(262145 + 17410) + cokeOffset1 + cokeOffset2) * cokeProduct)
-                    ImGui.Text("Product:")
-                    ImGui.SameLine()
-                    ImGui.Dummy(5, 1)
-                    ImGui.SameLine()
-                    ImGui.ProgressBar(
-                        (cokeProduct / 10),
-                        160,
-                        25,
-                        tostring(cokeProduct) .. " Kilos (" .. tostring(cokeProduct * 10) .. "%)"
-                    )
-                    ImGui.SameLine()
-                    ImGui.Dummy(10, 1)
-                    ImGui.SameLine()
-                    ImGui.Text("Value:")
-                    ImGui.SameLine()
-                    ImGui.Text(formatMoney(cokeTotal))
+            else
+                if ceoLoop then
+                    ceoLoop = false
                 end
-                ---------------------------------------Meth-----------------------------------------------------------------------
-                if methOwned then
-                    ImGui.Separator()
-                    ImGui.Text("Meth:        ")
-                    ImGui.SameLine()
-                    methUpdgrade1, used = ImGui.Checkbox("Equipment Upgrade##meth", methUpdgrade1)
-                    ImGui.SameLine()
-                    if used then
-                        CFG.save("methUpdgrade1", methUpdgrade1)
-                    end
-                    methUpdgrade2, used = ImGui.Checkbox("Staff Upgrade##meth", methUpdgrade2)
-                    if used then
-                        CFG.save("methUpdgrade2", methUpdgrade2)
-                    end
-                    if methUpdgrade1 then
-                        methOffset1 = globals.get_int(262145 + 17417)
-                    else
-                        methOffset1 = 0
-                    end
-                    if methUpdgrade2 then
-                        methOffset2 = globals.get_int(262145 + 17423)
-                    else
-                        methOffset2 = 0
-                    end
-                    local methProduct = stats.get_int(MPX() .. "PRODTOTALFORFACTORY2") or 0
-                    methTotal = ((globals.get_int(262145 + 17411) + methOffset1 + methOffset2) * methProduct)
-                    ImGui.Text("Product:")
-                    ImGui.SameLine()
-                    ImGui.Dummy(5, 1)
-                    ImGui.SameLine()
-                    ImGui.ProgressBar(
-                        (methProduct / 20),
-                        160,
-                        25,
-                        tostring(methProduct) .. " Pounds (" .. tostring(methProduct * 5) .. "%)"
-                    )
-                    ImGui.SameLine()
-                    ImGui.Dummy(10, 1)
-                    ImGui.SameLine()
-                    ImGui.Text("Value:")
-                    ImGui.SameLine()
-                    ImGui.Text(formatMoney(methTotal))
-                end
-                ---------------------------------------Weed------------------------------------------------------------------------
-                if weedOwned then
-                    ImGui.Separator()
-                    ImGui.Text("Weed:       ")
-                    ImGui.SameLine()
-                    weedUpdgrade1, used = ImGui.Checkbox("Equipment Upgrade##weed", weedUpdgrade1)
-                    ImGui.SameLine()
-                    if used then
-                        CFG.save("weedUpdgrade1", weedUpdgrade1)
-                    end
-                    weedUpdgrade2, used = ImGui.Checkbox("Staff Upgrade##weed", weedUpdgrade2)
-                    if used then
-                        CFG.save("weedUpdgrade2", weedUpdgrade2)
-                    end
-                    if weedUpdgrade1 then
-                        weedOffset1 = globals.get_int(262145 + 17418)
-                    else
-                        weedOffset1 = 0
-                    end
-                    if weedUpdgrade2 then
-                        weedOffset2 = globals.get_int(262145 + 17424)
-                    else
-                        weedOffset2 = 0
-                    end
-                    local weedProduct = stats.get_int("MPX_PRODTOTALFORFACTORY3")
-                    weedTotal = ((globals.get_int(262145 + 17412) + weedOffset1 + weedOffset2) * weedProduct)
-                    ImGui.Text("Product:")
-                    ImGui.SameLine()
-                    ImGui.Dummy(5, 1)
-                    ImGui.SameLine()
-                    ImGui.ProgressBar(
-                        (weedProduct / 80),
-                        160,
-                        25,
-                        tostring(weedProduct) .. " Pounds (" .. tostring(math.floor(weedProduct / 8 * 10)) .. "%)"
-                    )
-                    ImGui.SameLine()
-                    ImGui.Dummy(10, 1)
-                    ImGui.SameLine()
-                    ImGui.Text("Value:")
-                    ImGui.SameLine()
-                    ImGui.Text(formatMoney(weedTotal))
-                end
-                ---------------------------------------Document Forgery------------------------------------------------------------
-                if fdOwned then
-                    ImGui.Separator()
-                    ImGui.Text("Fake ID:    ")
-                    ImGui.SameLine()
-                    fdUpdgrade1, used = ImGui.Checkbox("Equipment Upgrade##fd", fdUpdgrade1)
-                    ImGui.SameLine()
-                    if used then
-                        CFG.save("fdUpdgrade1", fdUpdgrade1)
-                    end
-                    fdUpdgrade2, used = ImGui.Checkbox("Staff Upgrade##fd", fdUpdgrade2)
-                    if used then
-                        CFG.save("fdUpdgrade2", fdUpdgrade2)
-                    end
-                    if fdUpdgrade1 then
-                        fdOffset1 = globals.get_int(262145 + 17414)
-                    else
-                        fdOffset1 = 0
-                    end
-                    if fdUpdgrade2 then
-                        fdOffset2 = globals.get_int(262145 + 17420)
-                    else
-                        fdOffset2 = 0
-                    end
-                    local fdProduct = stats.get_int("MPX_PRODTOTALFORFACTORY4")
-                    fdTotal = ((globals.get_int(262145 + 17408) + fdOffset1 + fdOffset2) * fdProduct)
-                    ImGui.Text("Product:")
-                    ImGui.SameLine()
-                    ImGui.Dummy(5, 1)
-                    ImGui.SameLine()
-                    ImGui.ProgressBar(
-                        (fdProduct / 60),
-                        160,
-                        25,
-                        tostring(fdProduct) .. " Boxes (" .. tostring(math.floor(fdProduct / 6 * 10)) .. "%)"
-                    )
-                    ImGui.SameLine()
-                    ImGui.Dummy(10, 1)
-                    ImGui.SameLine()
-                    ImGui.Text("Value:")
-                    ImGui.SameLine()
-                    ImGui.Text(formatMoney(fdTotal))
-                end
-                ---------------------------------------Bunker-----------------------------------------------------------------------
-                if bunkerOwned then
-                    ImGui.Separator()
-                    ImGui.Text("Bunker:     ")
-                    ImGui.SameLine()
-                    bunkerUpdgrade1, used = ImGui.Checkbox("Equipment Upgrade##bunker", bunkerUpdgrade1)
-                    ImGui.SameLine()
-                    if used then
-                        CFG.save("bunkerUpdgrade1", bunkerUpdgrade1)
-                    end
-                    bunkerUpdgrade2, used = ImGui.Checkbox("Staff Upgrade##bunker", bunkerUpdgrade2)
-                    if used then
-                        CFG.save("bunkerUpdgrade2", bunkerUpdgrade2)
-                    end
-                    if bunkerUpdgrade1 then
-                        bunkerOffset1 = globals.get_int(262145 + 21345)
-                    else
-                        bunkerOffset1 = 0
-                    end
-                    if bunkerUpdgrade2 then
-                        bunkerOffset2 = globals.get_int(262145 + 21344)
-                    else
-                        bunkerOffset2 = 0
-                    end
-                    local bunkerProduct = stats.get_int("MPX_PRODTOTALFORFACTORY5")
-                    bunkerTotal = ((globals.get_int(262145 + 21343) + bunkerOffset1 + bunkerOffset2) * bunkerProduct)
-                    ImGui.Text("Product:")
-                    ImGui.SameLine()
-                    ImGui.Dummy(5, 1)
-                    ImGui.SameLine()
-                    ImGui.ProgressBar(
-                        (bunkerProduct / 100),
-                        160,
-                        25,
-                        tostring(bunkerProduct) .. " Crates (" .. tostring(bunkerProduct) .. "%)"
-                    )
-                    ImGui.SameLine()
-                    ImGui.Dummy(10, 1)
-                    ImGui.SameLine()
-                    ImGui.Text("Value:")
-                    ImGui.SameLine()
-                    ImGui.Text(
-                        "BC: " .. formatMoney(bunkerTotal) .. "\nLS: " .. formatMoney(math.floor(bunkerTotal * 1.5))
-                    )
-                end
-                ---------------------------------------Acid Lab-------------------------------------------------------------------
-                if acidOwned then
-                    ImGui.Separator()
-                    ImGui.Text("Acid Lab:   ")
-                    ImGui.SameLine()
-                    acidUpdgrade, used = ImGui.Checkbox("Equipment Upgrade##acid", acidUpdgrade)
-                    if used then
-                        CFG.save("acidUpdgrade", acidUpdgrade)
-                    end
-                    if acidUpdgrade then
-                        acidOffset = globals.get_int(262145 + 17419)
-                    else
-                        acidOffset = 0
-                    end
-                    local acidProduct = stats.get_int("MPX_PRODTOTALFORFACTORY6")
-                    acidTotal = ((globals.get_int(262145 + 17413) + acidOffset) * acidProduct)
-                    ImGui.Text("Product:")
-                    ImGui.SameLine()
-                    ImGui.Dummy(5, 1)
-                    ImGui.SameLine()
-                    ImGui.ProgressBar(
-                        (acidProduct / 100),
-                        160,
-                        25,
-                        tostring(acidProduct) .. " Sheets (" .. tostring(math.floor(acidProduct / 16 * 10)) .. "%)"
-                    )
-                    ImGui.SameLine()
-                    ImGui.Dummy(10, 1)
-                    ImGui.SameLine()
-                    ImGui.Text("Value:")
-                    ImGui.SameLine()
-                    ImGui.Text(formatMoney(acidTotal))
-                end
-                ImGui.Spacing()
-                ImGui.Separator()
-                local finalAmt = (
-                    hangarTotal
-                    + ceoTotal
-                    + cashTotal
-                    + cokeTotal
-                    + methTotal
-                    + weedTotal
-                    + fdTotal
-                    + bunkerTotal
-                    + acidTotal
-                )
-                ImGui.Spacing()
-                ImGui.Text("Total Profit = " .. formatMoney(finalAmt))
-                ImGui.EndTabItem()
             end
-            if ImGui.BeginTabItem("Business Safes") then
-                if stats.get_int("MPX_PROP_NIGHTCLUB") ~= 0 then
-                    ImGui.Spacing()
-                    ImGui.Spacing()
-                    ImGui.Text("¤ Nightclub ¤")
-                    if INTERIOR.GET_INTERIOR_FROM_ENTITY(self.get_ped()) == 0 then
-                        ImGui.SameLine()
-                        ImGui.Dummy(50, 1)
-                        ImGui.SameLine()
-                        if ImGui.Button("Teleport##nc") then
-                            script.run_in_fiber(function()
-                                local ncBlip = HUD.GET_FIRST_BLIP_INFO_ID(614)
-                                local ncLoc
-                                if HUD.DOES_BLIP_EXIST(ncBlip) then
-                                    ncLoc = HUD.GET_BLIP_COORDS(ncBlip)
-                                    selfTP(false, false, ncLoc)
-                                end
-                            end)
+            if INTERIOR.GET_INTERIOR_FROM_ENTITY(self.get_ped()) == 0 then
+                if ImGui.Button("Teleport To Office") then
+                    script.run_in_fiber(function()
+                        local ceoBlip = HUD.GET_FIRST_BLIP_INFO_ID(475)
+                        local ceoLoc
+                        if HUD.DOES_BLIP_EXIST(ceoBlip) then
+                            ceoLoc = HUD.GET_BLIP_COORDS(ceoBlip)
+                            selfTP(true, false, ceoLoc)
                         end
-                    end
-                    local currentNcPop = stats.get_int("MPX_CLUB_POPULARITY")
-                    local popDiff = 1000 - currentNcPop
-                    local currNcSafeMoney = stats.get_int("MPX_CLUB_SAFE_CASH_VALUE")
-                    ImGui.Text("Popularity: ")
-                    ImGui.SameLine()
-                    ImGui.Dummy(35, 1)
-                    ImGui.SameLine()
-                    ImGui.ProgressBar(currentNcPop / 1000, 160, 25, tostring(currentNcPop))
-                    if currentNcPop < 1000 then
-                        ImGui.SameLine()
-                        if ImGui.Button("Max Popularity") then
-                            stats.set_int("MPX_CLUB_POPULARITY", currentNcPop + popDiff)
-                            gui.show_success("YimResupplier", "Nightclub popularity increased.")
-                        end
-                    end
-                    ImGui.Text("Safe: ")
-                    ImGui.SameLine()
-                    ImGui.Dummy(75, 1)
-                    ImGui.SameLine()
-                    ImGui.ProgressBar(currNcSafeMoney / 250000, 160, 25, formatMoney(currNcSafeMoney))
-                    ImGui.Separator()
+                    end)
                 end
-                if stats.get_int("MPX_PROP_ARCADE") ~= 0 then
-                    ImGui.Spacing()
-                    ImGui.Spacing()
-                    ImGui.Text("¤ Arcade ¤")
-                    if INTERIOR.GET_INTERIOR_FROM_ENTITY(self.get_ped()) == 0 then
-                        ImGui.SameLine()
-                        ImGui.Dummy(60, 1)
-                        ImGui.SameLine()
-                        if ImGui.Button("Teleport##arcade") then
-                            script.run_in_fiber(function()
-                                local arBlip = HUD.GET_FIRST_BLIP_INFO_ID(740)
-                                local arLoc
-                                if HUD.DOES_BLIP_EXIST(arBlip) then
-                                    arLoc = HUD.GET_BLIP_COORDS(arBlip)
-                                    selfTP(false, false, arLoc)
-                                end
-                            end)
-                        end
+            end
+            ImGui.Spacing()
+            ImGui.Text("MC Supplies")
+            ImGui.Separator()
+            if fCashOwned then
+                ImGui.Text("Fake Cash:")
+                ImGui.SameLine()
+                ImGui.Dummy(55, 1)
+                ImGui.SameLine()
+                ImGui.ProgressBar((cashSupply / 100), 140, 30)
+                if math.ceil(cashSupply) < 100 then
+                    ImGui.SameLine()
+                    if ImGui.Button(" Fill ##FakeCash") then
+                        globals.set_int(main_global + 0 + 1, 1)
                     end
-                    local currArSafeMoney = stats.get_int("MPX_ARCADE_SAFE_CASH_VALUE")
-                    ImGui.Text("Safe: ")
                     ImGui.SameLine()
-                    ImGui.Dummy(75, 1)
-                    ImGui.SameLine()
-                    ImGui.ProgressBar(currArSafeMoney / 100000, 160, 25, formatMoney(currArSafeMoney))
-                    ImGui.Separator()
+                    ImGui.Dummy(5, 1)
                 end
-                if stats.get_int("MPX_PROP_SECURITY_OFFICE") ~= 0 then
-                    ImGui.Spacing()
-                    ImGui.Spacing()
-                    ImGui.Text("¤ Agency ¤")
-                    if INTERIOR.GET_INTERIOR_FROM_ENTITY(self.get_ped()) == 0 then
-                        ImGui.SameLine()
-                        ImGui.Dummy(60, 1)
-                        ImGui.SameLine()
-                        if ImGui.Button("Teleport##agnc") then
-                            script.run_in_fiber(function()
-                                local agncBlip = HUD.GET_FIRST_BLIP_INFO_ID(826)
-                                local agncLoc
-                                if HUD.DOES_BLIP_EXIST(agncBlip) then
-                                    agncLoc = HUD.GET_BLIP_COORDS(agncBlip)
-                                    selfTP(false, false, agncLoc)
-                                end
-                            end)
-                        end
+                if INTERIOR.GET_INTERIOR_FROM_ENTITY(self.get_ped()) == 0 then
+                    ImGui.SameLine()
+                    if ImGui.Button("Teleport##fc") then
+                        script.run_in_fiber(function()
+                            local fcBlip = HUD.GET_FIRST_BLIP_INFO_ID(500)
+                            local fcLoc
+                            if HUD.DOES_BLIP_EXIST(fcBlip) then
+                                fcLoc = HUD.GET_BLIP_COORDS(fcBlip)
+                                selfTP(false, false, fcLoc)
+                            end
+                        end)
                     end
-                    local currAgSafeMoney = stats.get_int("MPX_FIXER_SAFE_CASH_VALUE")
-                    ImGui.Text("Safe: ")
-                    ImGui.SameLine()
-                    ImGui.Dummy(75, 1)
-                    ImGui.SameLine()
-                    ImGui.ProgressBar(currAgSafeMoney / 250000, 160, 25, formatMoney(currAgSafeMoney))
-                    ImGui.Separator()
                 end
-                if stats.get_int("MPX_PROP_CLUBHOUSE") ~= 0 then
-                    ImGui.Spacing()
-                    ImGui.Spacing()
-                    ImGui.Text("¤ MC Clubhouse ¤")
-                    if INTERIOR.GET_INTERIOR_FROM_ENTITY(self.get_ped()) == 0 then
-                        ImGui.SameLine()
-                        ImGui.Dummy(10, 1)
-                        ImGui.SameLine()
-                        if ImGui.Button("Teleport##mc") then
-                            script.run_in_fiber(function()
-                                local mcBlip = HUD.GET_FIRST_BLIP_INFO_ID(492)
-                                local mcLoc
-                                if HUD.DOES_BLIP_EXIST(mcBlip) then
-                                    mcLoc = HUD.GET_BLIP_COORDS(mcBlip)
-                                    selfTP(false, false, mcLoc)
-                                end
-                            end)
-                        end
+            else
+                ImGui.Text("You don't own a Fake Cash business.")
+            end
+            if cokeOwned then
+                ImGui.Text("Cocaine:")
+                ImGui.SameLine()
+                ImGui.Dummy(73, 1)
+                ImGui.SameLine()
+                ImGui.ProgressBar((cokeSupply / 100), 140, 30)
+                if math.ceil(cokeSupply) < 100 then
+                    ImGui.SameLine()
+                    if ImGui.Button(" Fill ##Cocaine") then
+                        globals.set_int(main_global + 4 + 1, 1)
                     end
-                    local currClubHouseBarProfit = stats.get_int("MPX_BIKER_BAR_RESUPPLY_CASH")
-                    ImGui.Text("Bar Earnings: ")
                     ImGui.SameLine()
-                    ImGui.Dummy(15, 1)
-                    ImGui.SameLine()
-                    ImGui.ProgressBar(currClubHouseBarProfit / 100000, 160, 25, formatMoney(currClubHouseBarProfit))
-                    ImGui.Separator()
+                    ImGui.Dummy(5, 1)
                 end
-                if stats.get_int("MPX_PROP_BAIL_OFFICE") ~= 0 then
-                    ImGui.Spacing()
-                    ImGui.Spacing()
-                    ImGui.Text("¤ Bail Office ¤")
-                    if INTERIOR.GET_INTERIOR_FROM_ENTITY(self.get_ped()) == 0 then
-                        ImGui.SameLine()
-                        ImGui.Dummy(40, 1)
-                        ImGui.SameLine()
-                        if ImGui.Button("Teleport##bail") then
-                            script.run_in_fiber(function()
-                                local bailBlip = HUD.GET_FIRST_BLIP_INFO_ID(893)
-                                local bailLoc
-                                if HUD.DOES_BLIP_EXIST(bailBlip) then
-                                    bailLoc = HUD.GET_BLIP_COORDS(bailBlip)
-                                    bailLoc.y = bailLoc.y + 1.2
-                                    selfTP(false, false, bailLoc)
-                                end
-                            end)
-                        end
+                if INTERIOR.GET_INTERIOR_FROM_ENTITY(self.get_ped()) == 0 then
+                    ImGui.SameLine()
+                    if ImGui.Button("Teleport##coke") then
+                        script.run_in_fiber(function()
+                            local cokeBlip = HUD.GET_FIRST_BLIP_INFO_ID(497)
+                            local cokeLoc
+                            if HUD.DOES_BLIP_EXIST(cokeBlip) then
+                                cokeLoc = HUD.GET_BLIP_COORDS(cokeBlip)
+                                selfTP(false, false, cokeLoc)
+                            end
+                        end)
                     end
-                    local currBailSafe = stats.get_int("MPX_BAIL_SAFE_CASH_VALUE")
-                    ImGui.Text("Safe: ")
-                    ImGui.SameLine()
-                    ImGui.Dummy(75, 1)
-                    ImGui.SameLine()
-                    ImGui.ProgressBar(currBailSafe / 100000, 160, 25, formatMoney(currBailSafe))
-                    ImGui.Separator()
                 end
-                if stats.get_int("MPX_SALVAGE_YARD_OWNED") ~= 0 then
-                    ImGui.Spacing()
-                    ImGui.Spacing()
-                    ImGui.Text("¤ Salvage Yard ¤")
-                    if INTERIOR.GET_INTERIOR_FROM_ENTITY(self.get_ped()) == 0 then
-                        ImGui.SameLine()
-                        ImGui.Dummy(20, 1)
-                        ImGui.SameLine()
-                        if ImGui.Button("Teleport##salvage") then
-                            script.run_in_fiber(function()
-                                local slvgBlip = HUD.GET_FIRST_BLIP_INFO_ID(867)
-                                local slvgLoc
-                                if HUD.DOES_BLIP_EXIST(slvgBlip) then
-                                    slvgLoc = HUD.GET_BLIP_COORDS(slvgBlip)
-                                    selfTP(false, true, slvgLoc, 180)
-                                end
-                            end)
-                        end
+            else
+                ImGui.Text("You don't own a Cocaine business.")
+            end
+            if methOwned then
+                ImGui.Text("Meth:")
+                ImGui.SameLine()
+                ImGui.Dummy(95, 1)
+                ImGui.SameLine()
+                ImGui.ProgressBar((methSupply / 100), 140, 30)
+                if math.ceil(methSupply) < 100 then
+                    ImGui.SameLine()
+                    if ImGui.Button(" Fill ##Meth") then
+                        globals.set_int(main_global + 2 + 1, 1)
                     end
-                    local currSalvSafe = stats.get_int("MPX_SALVAGE_SAFE_CASH_VALUE")
-                    ImGui.Text("Safe: ")
                     ImGui.SameLine()
-                    ImGui.Dummy(75, 1)
+                    ImGui.Dummy(5, 1)
+                end
+                if INTERIOR.GET_INTERIOR_FROM_ENTITY(self.get_ped()) == 0 then
                     ImGui.SameLine()
-                    ImGui.ProgressBar(currSalvSafe / 250000, 160, 25, formatMoney(currSalvSafe))
+                    if ImGui.Button("Teleport##meth") then
+                        script.run_in_fiber(function()
+                            local methBlip = HUD.GET_FIRST_BLIP_INFO_ID(499)
+                            local methLoc
+                            if HUD.DOES_BLIP_EXIST(methBlip) then
+                                methLoc = HUD.GET_BLIP_COORDS(methBlip)
+                                selfTP(false, false, methLoc)
+                            end
+                        end)
+                    end
+                end
+            else
+                ImGui.Text("You don't own a Meth business.")
+            end
+            if weedOwned then
+                ImGui.Text("Weed:")
+                ImGui.SameLine()
+                ImGui.Dummy(90, 1)
+                ImGui.SameLine()
+                ImGui.ProgressBar((weedSupply / 100), 140, 30)
+                if math.ceil(weedSupply) < 100 then
+                    ImGui.SameLine()
+                    if ImGui.Button(" Fill ##Weed") then
+                        globals.set_int(main_global + 3 + 1, 1)
+                    end
+                    ImGui.SameLine()
+                    ImGui.Dummy(5, 1)
+                end
+                if INTERIOR.GET_INTERIOR_FROM_ENTITY(self.get_ped()) == 0 then
+                    ImGui.SameLine()
+                    if ImGui.Button("Teleport##weed") then
+                        script.run_in_fiber(function()
+                            local weedBlip = HUD.GET_FIRST_BLIP_INFO_ID(496)
+                            local weedLoc
+                            if HUD.DOES_BLIP_EXIST(weedBlip) then
+                                weedLoc = HUD.GET_BLIP_COORDS(weedBlip)
+                                selfTP(false, false, weedLoc)
+                            end
+                        end)
+                    end
+                end
+            else
+                ImGui.Text("You don't own a Weed business.")
+            end
+            if fdOwned then
+                ImGui.Text("Document Forgery: ")
+                ImGui.SameLine()
+                ImGui.ProgressBar((dfSupply / 100), 140, 30)
+                if math.ceil(dfSupply) < 100 then
+                    ImGui.SameLine()
+                    if ImGui.Button(" Fill ##DocumentForgery") then
+                        globals.set_int(main_global + 1 + 1, 1)
+                    end
+                    ImGui.SameLine()
+                    ImGui.Dummy(5, 1)
+                end
+                if INTERIOR.GET_INTERIOR_FROM_ENTITY(self.get_ped()) == 0 then
+                    ImGui.SameLine()
+                    if ImGui.Button("Teleport##fd") then
+                        script.run_in_fiber(function()
+                            local fdBlip = HUD.GET_FIRST_BLIP_INFO_ID(498)
+                            local fdLoc
+                            if HUD.DOES_BLIP_EXIST(fdBlip) then
+                                fdLoc = HUD.GET_BLIP_COORDS(fdBlip)
+                                selfTP(false, false, fdLoc)
+                            end
+                        end)
+                    end
+                end
+            else
+                ImGui.Text("You don't own a Document Forgery office.")
+            end
+            if bunkerOwned then
+                ImGui.Text("Bunker:")
+                ImGui.SameLine()
+                ImGui.Dummy(80, 1)
+                ImGui.SameLine()
+                ImGui.ProgressBar((bunkerSupply / 100), 140, 30)
+                if math.ceil(bunkerSupply) < 100 then
+                    ImGui.SameLine()
+                    if ImGui.Button(" Fill ##Bunker") then
+                        globals.set_int(main_global + 5 + 1, 1)
+                    end
+                    ImGui.SameLine()
+                    ImGui.Dummy(5, 1)
+                end
+                if INTERIOR.GET_INTERIOR_FROM_ENTITY(self.get_ped()) == 0 then
+                    ImGui.SameLine()
+                    if ImGui.Button("Teleport##bunker") then
+                        script.run_in_fiber(function()
+                            local bunkerBlip = HUD.GET_FIRST_BLIP_INFO_ID(557)
+                            local bunkerLoc
+                            if HUD.DOES_BLIP_EXIST(bunkerBlip) then
+                                bunkerLoc = HUD.GET_BLIP_COORDS(bunkerBlip)
+                                selfTP(true, false, bunkerLoc)
+                            end
+                        end)
+                    end
+                end
+            else
+                ImGui.Text("You don't own a Bunker.")
+            end
+            if acidOwned then
+                ImGui.Text("Acid Lab:")
+                ImGui.SameLine()
+                ImGui.Dummy(70, 1)
+                ImGui.SameLine()
+                ImGui.ProgressBar((acidSupply / 100), 140, 30)
+                if math.ceil(acidSupply) < 100 then
+                    ImGui.SameLine()
+                    if ImGui.Button(" Fill ##AcidLab") then
+                        globals.set_int(main_global + 6 + 1, 1)
+                    end
+                    ImGui.SameLine()
+                    ImGui.Dummy(5, 1)
+                end
+                if INTERIOR.GET_INTERIOR_FROM_ENTITY(self.get_ped()) == 0 then
+                    ImGui.SameLine()
+                    if ImGui.Button("Teleport##acid") then
+                        script.run_in_fiber(function()
+                            local acidBlip = HUD.GET_FIRST_BLIP_INFO_ID(848)
+                            local acidLoc
+                            if HUD.DOES_BLIP_EXIST(acidBlip) then
+                                acidLoc = HUD.GET_BLIP_COORDS(acidBlip)
+                                selfTP(true, false, acidLoc)
+                            end
+                        end)
+                    end
                 end
                 if INTERIOR.GET_INTERIOR_FROM_ENTITY(self.get_ped()) == 0 then
                     ImGui.Dummy(1, 10)
@@ -5555,18 +5139,594 @@ end
                         { 255, 204, 0, 0.8 }
                     )
                 end
-                ImGui.EndTabItem()
+            else
+                ImGui.Text("You don't own an Acid Lab.")
             end
-        else
-            ImGui.Text("\nUnavailable in Single Player.\n\n")
+            ImGui.EndTabItem()
         end
-    end)
+        if ImGui.BeginTabItem("Production Overview") then
+            --------------------------------------- Hangar ----------------------------------------------------------------------
+            if hangarOwned then
+                ImGui.Text("Hangar:")
+                local hangarCargo = stats.get_int(MPX() .. "HANGAR_CONTRABAND_TOTAL") or 0
+                hangarTotal = hangarCargo * 30000
+                ImGui.Text("Product:")
+                ImGui.SameLine()
+                ImGui.Dummy(5, 1)
+                ImGui.SameLine()
+                ImGui.ProgressBar(
+                    (hangarCargo / 50),
+                    160,
+                    25,
+                    tostring(hangarCargo) .. " Crates (" .. tostring(math.floor(hangarCargo / 0.5)) .. "%)"
+                )
+                ImGui.SameLine()
+                ImGui.Dummy(10, 1)
+                ImGui.SameLine()
+                ImGui.Text("Value:")
+                ImGui.SameLine()
+                ImGui.Text(formatMoney(hangarTotal))
+            end
+            --------------------------------------- CEO ----------------------------------------------------------------------
+            ImGui.Separator()
+            ImGui.Text("CEO:")
+            local wh1Supplies = stats.get_int(MPX() .. "CONTOTALFORWHOUSE0") or 0
+            local wh2Supplies = stats.get_int(MPX() .. "CONTOTALFORWHOUSE1") or 0
+            local wh3Supplies = stats.get_int(MPX() .. "CONTOTALFORWHOUSE2") or 0
+            local wh4Supplies = stats.get_int(MPX() .. "CONTOTALFORWHOUSE3") or 0
+            local wh5Supplies = stats.get_int(MPX() .. "CONTOTALFORWHOUSE4") or 0
+            if wh1Supplies ~= nil and wh1Supplies > 0 then
+                wh1Value = (globals.get_int(262145 + (getCEOvalue_G(wh1Supplies))))
+            else
+                wh1Value = 0
+            end
+            if wh2Supplies ~= nil and wh2Supplies > 0 then
+                wh2Value = (globals.get_int(262145 + (getCEOvalue_G(wh2Supplies))))
+            else
+                wh2Value = 0
+            end
+            if wh3Supplies ~= nil and wh3Supplies > 0 then
+                wh3Value = (globals.get_int(262145 + (getCEOvalue_G(wh3Supplies))))
+            else
+                wh3Value = 0
+            end
+            if wh4Supplies ~= nil and wh4Supplies > 0 then
+                wh4Value = (globals.get_int(262145 + (getCEOvalue_G(wh4Supplies))))
+            else
+                wh4Value = 0
+            end
+            if wh5Supplies ~= nil and wh5Supplies > 0 then
+                wh5Value = (globals.get_int(262145 + (getCEOvalue_G(wh5Supplies))))
+            else
+                wh5Value = 0
+            end
+            local ceoSupply = (wh1Supplies + wh2Supplies + wh3Supplies + wh4Supplies + wh5Supplies)
+            ceoTotal = (
+                (wh1Value * wh1Supplies)
+                + (wh2Value * wh2Supplies)
+                + (wh3Value * wh3Supplies)
+                + (wh4Value * wh4Supplies)
+                + (wh5Value * wh5Supplies)
+            )
+            ImGui.Text("Product:")
+            ImGui.SameLine()
+            ImGui.Dummy(5, 1)
+            ImGui.SameLine()
+            ImGui.ProgressBar(
+                (ceoSupply / 555),
+                160,
+                25,
+                tostring(ceoSupply) .. " Crates (" .. tostring(math.floor((ceoSupply / 555) * 100)) .. "%)"
+            )
+            ImGui.SameLine()
+            ImGui.Dummy(10, 1)
+            ImGui.SameLine()
+            ImGui.Text("Value:")
+            ImGui.SameLine()
+            ImGui.Text(formatMoney(ceoTotal))
+            --------------------------------------- Fake Cash -------------------------------------------------------------------
+            if fCashOwned then
+                ImGui.Separator()
+                ImGui.Text("Fake Cash:")
+                ImGui.SameLine()
+                cashUpdgrade1, used = ImGui.Checkbox("Equipment Upgrade##cash", cashUpdgrade1)
+                ImGui.SameLine()
+                if used then
+                    CFG.save("cashUpdgrade1", cashUpdgrade1)
+                end
+                cashUpdgrade2, used = ImGui.Checkbox("Staff Upgrade##cash", cashUpdgrade2)
+                if used then
+                    CFG.save("cashUpdgrade2", cashUpdgrade2)
+                end
+                if cashUpdgrade1 then
+                    cashOffset1 = globals.get_int(262145 + 17415)
+                else
+                    cashOffset1 = 0
+                end
+                if cashUpdgrade2 then
+                    cashOffset2 = globals.get_int(262145 + 17421)
+                else
+                    cashOffset2 = 0
+                end
+                local cashProduct = stats.get_int(MPX() .. "PRODTOTALFORFACTORY0") or 0
+                cashTotal = ((globals.get_int(262145 + 17409) + cashOffset1 + cashOffset2) * cashProduct)
+                ImGui.Text("Product:")
+                ImGui.SameLine()
+                ImGui.Dummy(5, 1)
+                ImGui.SameLine()
+                ImGui.ProgressBar(
+                    (cashProduct / 40),
+                    160,
+                    25,
+                    tostring(cashProduct) .. " Boxes (" .. tostring(math.floor(cashProduct * 2.5)) .. "%)"
+                )
+                ImGui.SameLine()
+                ImGui.Dummy(10, 1)
+                ImGui.SameLine()
+                ImGui.Text("Value:")
+                ImGui.SameLine()
+                ImGui.Text(formatMoney(cashTotal))
+            end
+            ---------------------------------------Coke----------------------------------------------------------------------
+            if cokeOwned then
+                ImGui.Separator()
+                ImGui.Text("Cocaine:    ")
+                ImGui.SameLine()
+                cokeUpdgrade1, used = ImGui.Checkbox("Equipment Upgrade##coke", cokeUpdgrade1)
+                ImGui.SameLine()
+                if used then
+                    CFG.save("cokeUpdgrade1", cokeUpdgrade1)
+                end
+                cokeUpdgrade2, used = ImGui.Checkbox("Staff Upgrade##coke", cokeUpdgrade2)
+                if used then
+                    CFG.save("cokeUpdgrade2", cokeUpdgrade2)
+                end
+                if cokeUpdgrade1 then
+                    cokeOffset1 = globals.get_int(262145 + 17416)
+                else
+                    cokeOffset1 = 0
+                end
+                if cokeUpdgrade2 then
+                    cokeOffset2 = globals.get_int(262145 + 17422)
+                else
+                    cokeOffset2 = 0
+                end
+                local cokeProduct = stats.get_int(MPX() .. "PRODTOTALFORFACTORY1") or 0
+                cokeTotal = ((globals.get_int(262145 + 17410) + cokeOffset1 + cokeOffset2) * cokeProduct)
+                ImGui.Text("Product:")
+                ImGui.SameLine()
+                ImGui.Dummy(5, 1)
+                ImGui.SameLine()
+                ImGui.ProgressBar(
+                    (cokeProduct / 10),
+                    160,
+                    25,
+                    tostring(cokeProduct) .. " Kilos (" .. tostring(cokeProduct * 10) .. "%)"
+                )
+                ImGui.SameLine()
+                ImGui.Dummy(10, 1)
+                ImGui.SameLine()
+                ImGui.Text("Value:")
+                ImGui.SameLine()
+                ImGui.Text(formatMoney(cokeTotal))
+            end
+            ---------------------------------------Meth-----------------------------------------------------------------------
+            if methOwned then
+                ImGui.Separator()
+                ImGui.Text("Meth:        ")
+                ImGui.SameLine()
+                methUpdgrade1, used = ImGui.Checkbox("Equipment Upgrade##meth", methUpdgrade1)
+                ImGui.SameLine()
+                if used then
+                    CFG.save("methUpdgrade1", methUpdgrade1)
+                end
+                methUpdgrade2, used = ImGui.Checkbox("Staff Upgrade##meth", methUpdgrade2)
+                if used then
+                    CFG.save("methUpdgrade2", methUpdgrade2)
+                end
+                if methUpdgrade1 then
+                    methOffset1 = globals.get_int(262145 + 17417)
+                else
+                    methOffset1 = 0
+                end
+                if methUpdgrade2 then
+                    methOffset2 = globals.get_int(262145 + 17423)
+                else
+                    methOffset2 = 0
+                end
+                local methProduct = stats.get_int(MPX() .. "PRODTOTALFORFACTORY2") or 0
+                methTotal = ((globals.get_int(262145 + 17411) + methOffset1 + methOffset2) * methProduct)
+                ImGui.Text("Product:")
+                ImGui.SameLine()
+                ImGui.Dummy(5, 1)
+                ImGui.SameLine()
+                ImGui.ProgressBar(
+                    (methProduct / 20),
+                    160,
+                    25,
+                    tostring(methProduct) .. " Pounds (" .. tostring(methProduct * 5) .. "%)"
+                )
+                ImGui.SameLine()
+                ImGui.Dummy(10, 1)
+                ImGui.SameLine()
+                ImGui.Text("Value:")
+                ImGui.SameLine()
+                ImGui.Text(formatMoney(methTotal))
+            end
+            ---------------------------------------Weed------------------------------------------------------------------------
+            if weedOwned then
+                ImGui.Separator()
+                ImGui.Text("Weed:       ")
+                ImGui.SameLine()
+                weedUpdgrade1, used = ImGui.Checkbox("Equipment Upgrade##weed", weedUpdgrade1)
+                ImGui.SameLine()
+                if used then
+                    CFG.save("weedUpdgrade1", weedUpdgrade1)
+                end
+                weedUpdgrade2, used = ImGui.Checkbox("Staff Upgrade##weed", weedUpdgrade2)
+                if used then
+                    CFG.save("weedUpdgrade2", weedUpdgrade2)
+                end
+                if weedUpdgrade1 then
+                    weedOffset1 = globals.get_int(262145 + 17418)
+                else
+                    weedOffset1 = 0
+                end
+                if weedUpdgrade2 then
+                    weedOffset2 = globals.get_int(262145 + 17424)
+                else
+                    weedOffset2 = 0
+                end
+                local weedProduct = stats.get_int("MPX_PRODTOTALFORFACTORY3")
+                weedTotal = ((globals.get_int(262145 + 17412) + weedOffset1 + weedOffset2) * weedProduct)
+                ImGui.Text("Product:")
+                ImGui.SameLine()
+                ImGui.Dummy(5, 1)
+                ImGui.SameLine()
+                ImGui.ProgressBar(
+                    (weedProduct / 80),
+                    160,
+                    25,
+                    tostring(weedProduct) .. " Pounds (" .. tostring(math.floor(weedProduct / 8 * 10)) .. "%)"
+                )
+                ImGui.SameLine()
+                ImGui.Dummy(10, 1)
+                ImGui.SameLine()
+                ImGui.Text("Value:")
+                ImGui.SameLine()
+                ImGui.Text(formatMoney(weedTotal))
+            end
+            ---------------------------------------Document Forgery------------------------------------------------------------
+            if fdOwned then
+                ImGui.Separator()
+                ImGui.Text("Fake ID:    ")
+                ImGui.SameLine()
+                fdUpdgrade1, used = ImGui.Checkbox("Equipment Upgrade##fd", fdUpdgrade1)
+                ImGui.SameLine()
+                if used then
+                    CFG.save("fdUpdgrade1", fdUpdgrade1)
+                end
+                fdUpdgrade2, used = ImGui.Checkbox("Staff Upgrade##fd", fdUpdgrade2)
+                if used then
+                    CFG.save("fdUpdgrade2", fdUpdgrade2)
+                end
+                if fdUpdgrade1 then
+                    fdOffset1 = globals.get_int(262145 + 17414)
+                else
+                    fdOffset1 = 0
+                end
+                if fdUpdgrade2 then
+                    fdOffset2 = globals.get_int(262145 + 17420)
+                else
+                    fdOffset2 = 0
+                end
+                local fdProduct = stats.get_int("MPX_PRODTOTALFORFACTORY4")
+                fdTotal = ((globals.get_int(262145 + 17408) + fdOffset1 + fdOffset2) * fdProduct)
+                ImGui.Text("Product:")
+                ImGui.SameLine()
+                ImGui.Dummy(5, 1)
+                ImGui.SameLine()
+                ImGui.ProgressBar(
+                    (fdProduct / 60),
+                    160,
+                    25,
+                    tostring(fdProduct) .. " Boxes (" .. tostring(math.floor(fdProduct / 6 * 10)) .. "%)"
+                )
+                ImGui.SameLine()
+                ImGui.Dummy(10, 1)
+                ImGui.SameLine()
+                ImGui.Text("Value:")
+                ImGui.SameLine()
+                ImGui.Text(formatMoney(fdTotal))
+            end
+            ---------------------------------------Bunker-----------------------------------------------------------------------
+            if bunkerOwned then
+                ImGui.Separator()
+                ImGui.Text("Bunker:     ")
+                ImGui.SameLine()
+                bunkerUpdgrade1, used = ImGui.Checkbox("Equipment Upgrade##bunker", bunkerUpdgrade1)
+                ImGui.SameLine()
+                if used then
+                    CFG.save("bunkerUpdgrade1", bunkerUpdgrade1)
+                end
+                bunkerUpdgrade2, used = ImGui.Checkbox("Staff Upgrade##bunker", bunkerUpdgrade2)
+                if used then
+                    CFG.save("bunkerUpdgrade2", bunkerUpdgrade2)
+                end
+                if bunkerUpdgrade1 then
+                    bunkerOffset1 = globals.get_int(262145 + 21345)
+                else
+                    bunkerOffset1 = 0
+                end
+                if bunkerUpdgrade2 then
+                    bunkerOffset2 = globals.get_int(262145 + 21344)
+                else
+                    bunkerOffset2 = 0
+                end
+                local bunkerProduct = stats.get_int("MPX_PRODTOTALFORFACTORY5")
+                bunkerTotal = ((globals.get_int(262145 + 21343) + bunkerOffset1 + bunkerOffset2) * bunkerProduct)
+                ImGui.Text("Product:")
+                ImGui.SameLine()
+                ImGui.Dummy(5, 1)
+                ImGui.SameLine()
+                ImGui.ProgressBar(
+                    (bunkerProduct / 100),
+                    160,
+                    25,
+                    tostring(bunkerProduct) .. " Crates (" .. tostring(bunkerProduct) .. "%)"
+                )
+                ImGui.SameLine()
+                ImGui.Dummy(10, 1)
+                ImGui.SameLine()
+                ImGui.Text("Value:")
+                ImGui.SameLine()
+                ImGui.Text("BC: " .. formatMoney(bunkerTotal) .. "\nLS: " .. formatMoney(math.floor(bunkerTotal * 1.5)))
+            end
+            ---------------------------------------Acid Lab-------------------------------------------------------------------
+            if acidOwned then
+                ImGui.Separator()
+                ImGui.Text("Acid Lab:   ")
+                ImGui.SameLine()
+                acidUpdgrade, used = ImGui.Checkbox("Equipment Upgrade##acid", acidUpdgrade)
+                if used then
+                    CFG.save("acidUpdgrade", acidUpdgrade)
+                end
+                if acidUpdgrade then
+                    acidOffset = globals.get_int(262145 + 17419)
+                else
+                    acidOffset = 0
+                end
+                local acidProduct = stats.get_int("MPX_PRODTOTALFORFACTORY6")
+                acidTotal = ((globals.get_int(262145 + 17413) + acidOffset) * acidProduct)
+                ImGui.Text("Product:")
+                ImGui.SameLine()
+                ImGui.Dummy(5, 1)
+                ImGui.SameLine()
+                ImGui.ProgressBar(
+                    (acidProduct / 100),
+                    160,
+                    25,
+                    tostring(acidProduct) .. " Sheets (" .. tostring(math.floor(acidProduct / 16 * 10)) .. "%)"
+                )
+                ImGui.SameLine()
+                ImGui.Dummy(10, 1)
+                ImGui.SameLine()
+                ImGui.Text("Value:")
+                ImGui.SameLine()
+                ImGui.Text(formatMoney(acidTotal))
+            end
+            ImGui.Spacing()
+            ImGui.Separator()
+            local finalAmt = (
+                hangarTotal
+                + ceoTotal
+                + cashTotal
+                + cokeTotal
+                + methTotal
+                + weedTotal
+                + fdTotal
+                + bunkerTotal
+                + acidTotal
+            )
+            ImGui.Spacing()
+            ImGui.Text("Total Profit = " .. formatMoney(finalAmt))
+            ImGui.EndTabItem()
+        end
+        if ImGui.BeginTabItem("Business Safes") then
+            if stats.get_int("MPX_PROP_NIGHTCLUB") ~= 0 then
+                ImGui.Spacing()
+                ImGui.Spacing()
+                ImGui.Text("¤ Nightclub ¤")
+                if INTERIOR.GET_INTERIOR_FROM_ENTITY(self.get_ped()) == 0 then
+                    ImGui.SameLine()
+                    ImGui.Dummy(50, 1)
+                    ImGui.SameLine()
+                    if ImGui.Button("Teleport##nc") then
+                        script.run_in_fiber(function()
+                            local ncBlip = HUD.GET_FIRST_BLIP_INFO_ID(614)
+                            local ncLoc
+                            if HUD.DOES_BLIP_EXIST(ncBlip) then
+                                ncLoc = HUD.GET_BLIP_COORDS(ncBlip)
+                                selfTP(false, false, ncLoc)
+                            end
+                        end)
+                    end
+                end
+                local currentNcPop = stats.get_int("MPX_CLUB_POPULARITY")
+                local popDiff = 1000 - currentNcPop
+                local currNcSafeMoney = stats.get_int("MPX_CLUB_SAFE_CASH_VALUE")
+                ImGui.Text("Popularity: ")
+                ImGui.SameLine()
+                ImGui.Dummy(35, 1)
+                ImGui.SameLine()
+                ImGui.ProgressBar(currentNcPop / 1000, 160, 25, tostring(currentNcPop))
+                if currentNcPop < 1000 then
+                    ImGui.SameLine()
+                    if ImGui.Button("Max Popularity") then
+                        stats.set_int("MPX_CLUB_POPULARITY", currentNcPop + popDiff)
+                        gui.show_success("YimResupplier", "Nightclub popularity increased.")
+                    end
+                end
+                ImGui.Text("Safe: ")
+                ImGui.SameLine()
+                ImGui.Dummy(75, 1)
+                ImGui.SameLine()
+                ImGui.ProgressBar(currNcSafeMoney / 250000, 160, 25, formatMoney(currNcSafeMoney))
+                ImGui.Separator()
+            end
+            if stats.get_int("MPX_PROP_ARCADE") ~= 0 then
+                ImGui.Spacing()
+                ImGui.Spacing()
+                ImGui.Text("¤ Arcade ¤")
+                if INTERIOR.GET_INTERIOR_FROM_ENTITY(self.get_ped()) == 0 then
+                    ImGui.SameLine()
+                    ImGui.Dummy(60, 1)
+                    ImGui.SameLine()
+                    if ImGui.Button("Teleport##arcade") then
+                        script.run_in_fiber(function()
+                            local arBlip = HUD.GET_FIRST_BLIP_INFO_ID(740)
+                            local arLoc
+                            if HUD.DOES_BLIP_EXIST(arBlip) then
+                                arLoc = HUD.GET_BLIP_COORDS(arBlip)
+                                selfTP(false, false, arLoc)
+                            end
+                        end)
+                    end
+                end
+                local currArSafeMoney = stats.get_int("MPX_ARCADE_SAFE_CASH_VALUE")
+                ImGui.Text("Safe: ")
+                ImGui.SameLine()
+                ImGui.Dummy(75, 1)
+                ImGui.SameLine()
+                ImGui.ProgressBar(currArSafeMoney / 100000, 160, 25, formatMoney(currArSafeMoney))
+                ImGui.Separator()
+            end
+            if stats.get_int("MPX_PROP_SECURITY_OFFICE") ~= 0 then
+                ImGui.Spacing()
+                ImGui.Spacing()
+                ImGui.Text("¤ Agency ¤")
+                if INTERIOR.GET_INTERIOR_FROM_ENTITY(self.get_ped()) == 0 then
+                    ImGui.SameLine()
+                    ImGui.Dummy(60, 1)
+                    ImGui.SameLine()
+                    if ImGui.Button("Teleport##agnc") then
+                        script.run_in_fiber(function()
+                            local agncBlip = HUD.GET_FIRST_BLIP_INFO_ID(826)
+                            local agncLoc
+                            if HUD.DOES_BLIP_EXIST(agncBlip) then
+                                agncLoc = HUD.GET_BLIP_COORDS(agncBlip)
+                                selfTP(false, false, agncLoc)
+                            end
+                        end)
+                    end
+                end
+                local currAgSafeMoney = stats.get_int("MPX_FIXER_SAFE_CASH_VALUE")
+                ImGui.Text("Safe: ")
+                ImGui.SameLine()
+                ImGui.Dummy(75, 1)
+                ImGui.SameLine()
+                ImGui.ProgressBar(currAgSafeMoney / 250000, 160, 25, formatMoney(currAgSafeMoney))
+                ImGui.Separator()
+            end
+            if stats.get_int("MPX_PROP_CLUBHOUSE") ~= 0 then
+                ImGui.Spacing()
+                ImGui.Spacing()
+                ImGui.Text("¤ MC Clubhouse ¤")
+                if INTERIOR.GET_INTERIOR_FROM_ENTITY(self.get_ped()) == 0 then
+                    ImGui.SameLine()
+                    ImGui.Dummy(10, 1)
+                    ImGui.SameLine()
+                    if ImGui.Button("Teleport##mc") then
+                        script.run_in_fiber(function()
+                            local mcBlip = HUD.GET_FIRST_BLIP_INFO_ID(492)
+                            local mcLoc
+                            if HUD.DOES_BLIP_EXIST(mcBlip) then
+                                mcLoc = HUD.GET_BLIP_COORDS(mcBlip)
+                                selfTP(false, false, mcLoc)
+                            end
+                        end)
+                    end
+                end
+                local currClubHouseBarProfit = stats.get_int("MPX_BIKER_BAR_RESUPPLY_CASH")
+                ImGui.Text("Bar Earnings: ")
+                ImGui.SameLine()
+                ImGui.Dummy(15, 1)
+                ImGui.SameLine()
+                ImGui.ProgressBar(currClubHouseBarProfit / 100000, 160, 25, formatMoney(currClubHouseBarProfit))
+                ImGui.Separator()
+            end
+            if stats.get_int("MPX_PROP_BAIL_OFFICE") ~= 0 then
+                ImGui.Spacing()
+                ImGui.Spacing()
+                ImGui.Text("¤ Bail Office ¤")
+                if INTERIOR.GET_INTERIOR_FROM_ENTITY(self.get_ped()) == 0 then
+                    ImGui.SameLine()
+                    ImGui.Dummy(40, 1)
+                    ImGui.SameLine()
+                    if ImGui.Button("Teleport##bail") then
+                        script.run_in_fiber(function()
+                            local bailBlip = HUD.GET_FIRST_BLIP_INFO_ID(893)
+                            local bailLoc
+                            if HUD.DOES_BLIP_EXIST(bailBlip) then
+                                bailLoc = HUD.GET_BLIP_COORDS(bailBlip)
+                                bailLoc.y = bailLoc.y + 1.2
+                                selfTP(false, false, bailLoc)
+                            end
+                        end)
+                    end
+                end
+                local currBailSafe = stats.get_int("MPX_BAIL_SAFE_CASH_VALUE")
+                ImGui.Text("Safe: ")
+                ImGui.SameLine()
+                ImGui.Dummy(75, 1)
+                ImGui.SameLine()
+                ImGui.ProgressBar(currBailSafe / 100000, 160, 25, formatMoney(currBailSafe))
+                ImGui.Separator()
+            end
+            if stats.get_int("MPX_SALVAGE_YARD_OWNED") ~= 0 then
+                ImGui.Spacing()
+                ImGui.Spacing()
+                ImGui.Text("¤ Salvage Yard ¤")
+                if INTERIOR.GET_INTERIOR_FROM_ENTITY(self.get_ped()) == 0 then
+                    ImGui.SameLine()
+                    ImGui.Dummy(20, 1)
+                    ImGui.SameLine()
+                    if ImGui.Button("Teleport##salvage") then
+                        script.run_in_fiber(function()
+                            local slvgBlip = HUD.GET_FIRST_BLIP_INFO_ID(867)
+                            local slvgLoc
+                            if HUD.DOES_BLIP_EXIST(slvgBlip) then
+                                slvgLoc = HUD.GET_BLIP_COORDS(slvgBlip)
+                                selfTP(false, true, slvgLoc, 180)
+                            end
+                        end)
+                    end
+                end
+                local currSalvSafe = stats.get_int("MPX_SALVAGE_SAFE_CASH_VALUE")
+                ImGui.Text("Safe: ")
+                ImGui.SameLine()
+                ImGui.Dummy(75, 1)
+                ImGui.SameLine()
+                ImGui.ProgressBar(currSalvSafe / 250000, 160, 25, formatMoney(currSalvSafe))
+            end
+            if INTERIOR.GET_INTERIOR_FROM_ENTITY(self.get_ped()) == 0 then
+                ImGui.Dummy(1, 10)
+                coloredText("WARNING!\10Teleport buttons might be broken in public sessions.", 40, { 255, 204, 0, 0.8 })
+            end
+            ImGui.EndTabItem()
+        end
+    else
+        ImGui.Text("\nUnavailable in Single Player.\n\n")
+    end
+end)
 
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 ReportsMenu = L7NEG:add_tab("Reports Menu")
 ReportsMenu:add_imgui(function()
-    if checkOnline() then return end
+    if checkOnline() then
+        return
+    end
     ImGui.Text("Griefing: " .. stats.get_int("MPPLY_GRIEFING"))
     ImGui.Text("Exploiting: " .. stats.get_int("MPPLY_EXPLOITS"))
     ImGui.Text("Abusing Bugs: " .. stats.get_int("MPPLY_GAME_EXPLOITS"))
@@ -5633,9 +5793,13 @@ end)
 ApartmentDataEditorMenu:add_sameline()
 ApartmentDataEditorMenu:add_text("")
 ApartmentDataEditorMenu:add_text("For Fleeca:")
-ApartmentDataEditorMenu:add_text("Pay for the preparation, start the first mission and as soon as you are sent to scout\nchange the session, come back to planning room, press \"Complete Preps\" near white board and press \"E\"")
+ApartmentDataEditorMenu:add_text(
+    'Pay for the preparation, start the first mission and as soon as you are sent to scout\nchange the session, come back to planning room, press "Complete Preps" near white board and press "E"'
+)
 ApartmentDataEditorMenu:add_text("For Other Heist:")
-ApartmentDataEditorMenu:add_text("Start the mission and leave after the 1st cutscene ends, press \"Complete Preps\" near white board and press \"E\"")
+ApartmentDataEditorMenu:add_text(
+    'Start the mission and leave after the 1st cutscene ends, press "Complete Preps" near white board and press "E"'
+)
 ApartmentDataEditorMenu:add_separator()
 ApartmentDataEditorMenu:add_button("Kill Cooldown", function()
     globals.set_int(ACDg + 1 + (PLAYER.PLAYER_ID() * 77) + 76, -1)
@@ -5651,8 +5815,10 @@ ApartmentDataEditorMenu:add_separator()
 ApartmentDataEditorMenu:add_text("Team Lives:")
 local livesValueApartment = 3
 ApartmentDataEditorMenu:add_imgui(function()
-    if checkOnline() then return end
-    
+    if checkOnline() then
+        return
+    end
+
     ImGui.Text("Team Lives:")
     livesValueApartment, _ = ImGui.InputInt("##ApartmentLives", livesValueApartment)
     if ImGui.Button("Set Lives##Apartment") then
@@ -5670,37 +5836,44 @@ end)
 
 local heistCuts = {
     easy = {
-        [1328892776] = {-5862, 2981},
-        [964111671] =  {-1614, 857},  
-        [1131632450] = {-1168, 634},
-        [1967927346] = {-1596, 848},
-        [1182286714] = {-700, 400}
+        [1328892776] = { -5862, 2981 },
+        [964111671] = { -1614, 857 },
+        [1131632450] = { -1168, 634 },
+        [1967927346] = { -1596, 848 },
+        [1182286714] = { -700, 400 },
     },
     normal = {
-        [1328892776] = {-2878, 1489},
-        [964111671] =  {-756, 428},
-        [1131632450] = {-534, 317},
-        [1967927346] = {-748, 424},
-        [1182286714] = {-300, 200}
+        [1328892776] = { -2878, 1489 },
+        [964111671] = { -756, 428 },
+        [1131632450] = { -534, 317 },
+        [1967927346] = { -748, 424 },
+        [1182286714] = { -300, 200 },
     },
     hard = {
-        [1328892776] = {-2284, 1192},
-        [964111671] =  {-584, 342},
-        [1131632450] = {-406, 253},
-        [1967927346] = {-578, 339},
-        [1182286714] = {-220, 160}
-    }
+        [1328892776] = { -2284, 1192 },
+        [964111671] = { -584, 342 },
+        [1131632450] = { -406, 253 },
+        [1967927346] = { -578, 339 },
+        [1182286714] = { -220, 160 },
+    },
 }
 
 ApartmentDataEditorMenu:add_separator()
-ApartmentDataEditorMenu:add_text("Works only for you. Allows you to get 12 millions bonus for The Pacific Standard Job on hard difficulty.\nEnable before starting the heist. Has a cooldown.")
+ApartmentDataEditorMenu:add_text(
+    "Works only for you. Allows you to get 12 millions bonus for The Pacific Standard Job on hard difficulty.\nEnable before starting the heist. Has a cooldown."
+)
 
 local apartmentBonus = ApartmentDataEditorMenu:add_checkbox("12mil Bonus")
 local previousState = false
 
 script.register_looped("SN_Apartment_Bonus", function(script)
     script:yield()
-    if not network.is_session_started() or SCRIPT.GET_NUMBER_OF_THREADS_RUNNING_THE_SCRIPT_WITH_THIS_HASH(joaat("maintransition")) > 0 then return end
+    if
+        not network.is_session_started()
+        or SCRIPT.GET_NUMBER_OF_THREADS_RUNNING_THE_SCRIPT_WITH_THIS_HASH(joaat("maintransition")) > 0
+    then
+        return
+    end
     local currentState = apartmentBonus:is_enabled()
     if currentState ~= previousState then
         stats.set_int(joaat("MPPLY_HEISTFLOWORDERPROGRESS"), currentState and 268435455 or 134217727)
@@ -5709,14 +5882,18 @@ script.register_looped("SN_Apartment_Bonus", function(script)
         stats.set_bool(joaat("MPPLY_AWD_HST_SAME_TEAM"), not currentState)
         stats.set_int(joaat("MPPLY_HEISTNODEATHPROGREITSET"), currentState and 268435455 or 134217727)
         stats.set_bool(joaat("MPPLY_AWD_HST_ULT_CHAL"), not currentState)
-        gui.show_message("12mil Bonus", currentState and "Bonus should've been applied. Don't forget about difficulty" or "Bonus should've been unapplied")
+        gui.show_message(
+            "12mil Bonus",
+            currentState and "Bonus should've been applied. Don't forget about difficulty"
+                or "Bonus should've been unapplied"
+        )
         previousState = currentState
     end
     script:sleep(100)
 end)
 
 ApartmentDataEditorMenu:add_separator()
-local difficultyKeys = {"easy", "normal", "hard"}
+local difficultyKeys = { "easy", "normal", "hard" }
 ApartmentDataEditorMenu:add_button("3mil Payout", function()
     script.run_in_fiber(function(ap)
         local key = globals.get_int(ACDg + (PLAYER.PLAYER_ID() * 77) + 24 + 2)
@@ -5741,43 +5918,40 @@ ApartmentDataEditorMenu:add_button("3mil Payout", function()
 end)
 ApartmentDataEditorMenu:add_separator()
 
-
 local apartCut1 = 0
 local apartCut2 = 0
 local apartCut3 = 0
 local apartCut4 = 0
-ApartmentDataEditorMenu:add_imgui(
-    function ()
-        PAD.DISABLE_CONTROL_ACTION(2, 237, true)
-        ImGui.Text("Custom Cuts:")
-        ImGui.SetNextItemWidth(150)
-        apartCut1 = ImGui.InputInt("Cut 1", apartCut1)
-        ImGui.SameLine()
-        ImGui.SetNextItemWidth(150)
-        apartCut2 = ImGui.InputInt("Cut 2", apartCut2)
-        ImGui.SetNextItemWidth(150)
-        apartCut3 = ImGui.InputInt("Cut 3", apartCut3)
-        ImGui.SameLine()
-        ImGui.SetNextItemWidth(150)
-        apartCut4 = ImGui.InputInt("Cut 4", apartCut4)
-        if ImGui.Button("Set Cuts") then
-            script.run_in_fiber(function(ccut)
-                local heistType = locals.get_int("fmmc_launcher", HGGs1)
-                local multiplier = (heistType == 1328892776) and 2 or 4
-                globals.set_int(ACg1, 100 - (apartCut1 * multiplier))
-                globals.set_int(ACg2, 100 - (apartCut2 * multiplier))
-                globals.set_int(ACg3, 100 - (apartCut3 * multiplier))
-                globals.set_int(ACg4, 100 - (apartCut4 * multiplier))
-                PAD.SET_CONTROL_VALUE_NEXT_FRAME(2, 201, 1)
-                ccut:sleep(1000)
-                PAD.SET_CONTROL_VALUE_NEXT_FRAME(2, 202, 1)
-                ccut:sleep(1000)
-                globals.set_int(ACg5, -1 * (-100 + globals.get_int(ACg1)) / multiplier)
-                gui.show_message("Apartment Heist", "Cuts should've been applied")
-            end)
-        end
+ApartmentDataEditorMenu:add_imgui(function()
+    PAD.DISABLE_CONTROL_ACTION(2, 237, true)
+    ImGui.Text("Custom Cuts:")
+    ImGui.SetNextItemWidth(150)
+    apartCut1 = ImGui.InputInt("Cut 1", apartCut1)
+    ImGui.SameLine()
+    ImGui.SetNextItemWidth(150)
+    apartCut2 = ImGui.InputInt("Cut 2", apartCut2)
+    ImGui.SetNextItemWidth(150)
+    apartCut3 = ImGui.InputInt("Cut 3", apartCut3)
+    ImGui.SameLine()
+    ImGui.SetNextItemWidth(150)
+    apartCut4 = ImGui.InputInt("Cut 4", apartCut4)
+    if ImGui.Button("Set Cuts") then
+        script.run_in_fiber(function(ccut)
+            local heistType = locals.get_int("fmmc_launcher", HGGs1)
+            local multiplier = (heistType == 1328892776) and 2 or 4
+            globals.set_int(ACg1, 100 - (apartCut1 * multiplier))
+            globals.set_int(ACg2, 100 - (apartCut2 * multiplier))
+            globals.set_int(ACg3, 100 - (apartCut3 * multiplier))
+            globals.set_int(ACg4, 100 - (apartCut4 * multiplier))
+            PAD.SET_CONTROL_VALUE_NEXT_FRAME(2, 201, 1)
+            ccut:sleep(1000)
+            PAD.SET_CONTROL_VALUE_NEXT_FRAME(2, 202, 1)
+            ccut:sleep(1000)
+            globals.set_int(ACg5, -1 * (-100 + globals.get_int(ACg1)) / multiplier)
+            gui.show_message("Apartment Heist", "Cuts should've been applied")
+        end)
     end
-)
+end)
 ApartmentDataEditorMenu:add_separator()
 ApartmentDataEditorMenu:add_text("Extras")
 ApartmentDataEditorMenu:add_button("Bypass Fleeca Hack", function()
@@ -5813,13 +5987,12 @@ ApartmentDataEditorMenu:add_button("Unlock All Jobs", function()
     stats.set_int(MPX() .. "HEIST_SAVED_STRAND_4_L", 5)
     gui.show_message("Apartment Heist", "All jobs should've been unlocked. Don't forget to restart the game")
 end)
-ApartmentDataEditorMenu:add_button("Solo Launch",
-function()
+ApartmentDataEditorMenu:add_button("Solo Launch", function()
     if locals.get_int("fmmc_launcher", HGGs1) ~= nil then
         if locals.get_int("fmmc_launcher", HGGs1) ~= 0 then
             if locals.get_int("fmmc_launcher", HGGs1) > 1 then
-                    locals.set_int("fmmc_launcher", HGGs2, 1)
-                    globals.set_int(794989 + 4 + 1 + (locals.get_int("fmmc_launcher", HGGs1) * 95) + 75, 1)
+                locals.set_int("fmmc_launcher", HGGs2, 1)
+                globals.set_int(794989 + 4 + 1 + (locals.get_int("fmmc_launcher", HGGs1) * 95) + 75, 1)
             end
             globals.set_int(HGLs1, 1)
             globals.set_int(HGLs2, 1)
@@ -5867,18 +6040,18 @@ ApartmentDataEditorMenu:add_text("Note: After Clicking Unlock All Heists, restar
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 -- Agency tab
 local AgencyContracts = {
-    {name = "None", index = 3},
-    {name = "Nightclub", index = 4},
-    {name = "Marina", index = 12},
-    {name = "Nightlife Leak", index = 28},
-    {name = "Country Club", index = 60},
-    {name = "Guest List", index = 123},
-    {name = "High Society Leak", index = 254},
-    {name = "Davis", index = 508},
-    {name = "Ballas", index = 1020},
-    {name = "South Central Leak", index = 2044},
-    {name = "Studio Time", index = 2045},
-    {name = "Don't Fuck With Dre", index = 4095}
+    { name = "None", index = 3 },
+    { name = "Nightclub", index = 4 },
+    { name = "Marina", index = 12 },
+    { name = "Nightlife Leak", index = 28 },
+    { name = "Country Club", index = 60 },
+    { name = "Guest List", index = 123 },
+    { name = "High Society Leak", index = 254 },
+    { name = "Davis", index = 508 },
+    { name = "Ballas", index = 1020 },
+    { name = "South Central Leak", index = 2044 },
+    { name = "Studio Time", index = 2045 },
+    { name = "Don't Fuck With Dre", index = 4095 },
 }
 
 local contractNames = {}
@@ -5907,7 +6080,7 @@ SN_Agency:add_imgui(function()
         sContract = nSelected
         local contractD = AgencyContracts[sContract + 1]
         local contractId = contractD.index
-        
+
         stats.set_int(MPX() .. "FIXER_STORY_BS", contractId)
         if contractId < 18 then
             stats.set_int(MPX() .. "FIXER_STORY_STRAND", 0)
@@ -5973,14 +6146,29 @@ local AutoShopContracts = {
     { name = "Prison Contrac.", index = 4 },
     { name = "Agency Deal", index = 5 },
     { name = "Lost Contract", index = 6 },
-    { name = "Data Contract", index = 7 }
+    { name = "Data Contract", index = 7 },
 }
 
 local autoSelectedIndex = 0
 local SN_Autoshop = HeistsDataEditorMenu:add_tab("Autoshop ")
 SN_Autoshop:add_imgui(function()
     ImGui.Text("Contract:")
-    autoSelectedIndex = ImGui.Combo("##AutoContract", autoSelectedIndex, { AutoShopContracts[1].name, AutoShopContracts[2].name, AutoShopContracts[3].name, AutoShopContracts[4].name, AutoShopContracts[5].name, AutoShopContracts[6].name, AutoShopContracts[7].name, AutoShopContracts[8].name, AutoShopContracts[9].name }, 9)
+    autoSelectedIndex = ImGui.Combo(
+        "##AutoContract",
+        autoSelectedIndex,
+        {
+            AutoShopContracts[1].name,
+            AutoShopContracts[2].name,
+            AutoShopContracts[3].name,
+            AutoShopContracts[4].name,
+            AutoShopContracts[5].name,
+            AutoShopContracts[6].name,
+            AutoShopContracts[7].name,
+            AutoShopContracts[8].name,
+            AutoShopContracts[9].name,
+        },
+        9
+    )
 end)
 SN_Autoshop:add_button("Apply & Complete Preps", function()
     local contract = AutoShopContracts[autoSelectedIndex + 1].index
@@ -6024,7 +6212,7 @@ end)
 SN_Autoshop:add_text("Use 'Apply Payout' after you can see the minimap.")
 SN_Autoshop:add_separator()
 SN_Autoshop:add_text("Extras")
-SN_Autoshop:add_button("Instant Finish", function ()
+SN_Autoshop:add_button("Instant Finish", function()
     locals.set_int("fm_mission_controller_2020", ASIFl1, 51338977)
     locals.set_int("fm_mission_controller_2020", ASIFl2, 101)
     gui.show_message("Autoshop", "Heist should've been finished")
@@ -6040,7 +6228,7 @@ local SalvageYard = {
         { name = "Gangbanger", index = 1 },
         { name = "Duggan", index = 2 },
         { name = "Podium", index = 3 },
-        { name = "McTony", index = 4 }
+        { name = "McTony", index = 4 },
     },
     vehicles = {
         { name = "LM87", index = 1 },
@@ -6141,8 +6329,8 @@ local SalvageYard = {
         { name = "Brigham", index = 96 },
         { name = "Issi Rally", index = 97 },
         { name = "Seminole Fr.", index = 98 },
-        { name = "Kanjo SJ", index = 99  },
-        { name = "Previon", index = 100 }
+        { name = "Kanjo SJ", index = 99 },
+        { name = "Previon", index = 100 },
     },
     modifications = {
         { name = "Version 1", index = 0 },
@@ -6153,7 +6341,7 @@ local SalvageYard = {
     },
     keeps = {
         { name = "Can't Claim", index = 0 },
-        { name = "Can Claim", index = 1 }
+        { name = "Can Claim", index = 1 },
     },
     tunables = {
         robbery_slot1_type = 1152433341,
@@ -6168,7 +6356,7 @@ local SalvageYard = {
         vehicle_slot3_type = 1806057372,
         vehicle_slot3_value = -1704051341,
         vehicle_slot3_cankeep = 1830093543,
-        cooldown_weekly = "SALV23_VEH_ROBBERY_WEEK_ID"
+        cooldown_weekly = "SALV23_VEH_ROBBERY_WEEK_ID",
     },
     salvage_missions = {
         { script = "fm_content_vehrob_cargo_ship", step1 = 7185 + 1, step2 = 7330 + 1249 },
@@ -6184,19 +6372,19 @@ local slot1 = {
     robbery_index = 0,
     vehicle_index = 0,
     mod_index = 0,
-    keep_index = 0
+    keep_index = 0,
 }
 local slot2 = {
     robbery_index = 0,
     vehicle_index = 0,
     mod_index = 0,
-    keep_index = 0
+    keep_index = 0,
 }
 local slot3 = {
     robbery_index = 0,
     vehicle_index = 0,
     mod_index = 0,
-    keep_index = 0
+    keep_index = 0,
 }
 
 local robbery_names = {}
@@ -6226,31 +6414,43 @@ SN_Salvage:add_imgui(function()
         ssIndex = nIndex
     end
     local currSlot = ssIndex + 1
-    local slots = {slot1, slot2, slot3}
+    local slots = { slot1, slot2, slot3 }
     local slot = slots[currSlot]
 
     local nIndex, changed = ImGui.Combo("Robbery", slot.robbery_index, robbery_names, #robbery_names)
     if changed then
         slot.robbery_index = nIndex
-        gui.show_message("Salvage Yard", "Selected " .. slot_names[ssIndex + 1] .. " robbery: " .. robbery_names[slot.robbery_index + 1])
+        gui.show_message(
+            "Salvage Yard",
+            "Selected " .. slot_names[ssIndex + 1] .. " robbery: " .. robbery_names[slot.robbery_index + 1]
+        )
     end
 
     nIndex, changed = ImGui.Combo("Vehicle", slot.vehicle_index, vehicle_names, #vehicle_names)
     if changed then
         slot.vehicle_index = nIndex
-        gui.show_message("Salvage Yard", "Selected " .. slot_names[ssIndex + 1] .. " vehicle: " .. vehicle_names[slot.vehicle_index + 1])
+        gui.show_message(
+            "Salvage Yard",
+            "Selected " .. slot_names[ssIndex + 1] .. " vehicle: " .. vehicle_names[slot.vehicle_index + 1]
+        )
     end
 
     nIndex, changed = ImGui.Combo("Modification", slot.mod_index, mod_names, #mod_names)
     if changed then
         slot.mod_index = nIndex
-        gui.show_message("Salvage Yard", "Selected " .. slot_names[ssIndex + 1] .. " modification: " .. mod_names[slot.mod_index + 1])
+        gui.show_message(
+            "Salvage Yard",
+            "Selected " .. slot_names[ssIndex + 1] .. " modification: " .. mod_names[slot.mod_index + 1]
+        )
     end
 
     nIndex, changed = ImGui.Combo("Status", slot.keep_index, keep_names, #keep_names)
     if changed then
         slot.keep_index = nIndex
-        gui.show_message("Salvage Yard", "Selected " .. slot_names[ssIndex + 1] .. " status: " .. keep_names[slot.keep_index + 1])
+        gui.show_message(
+            "Salvage Yard",
+            "Selected " .. slot_names[ssIndex + 1] .. " status: " .. keep_names[slot.keep_index + 1]
+        )
     end
 
     if ImGui.Button("Apply Changes") then
@@ -6283,7 +6483,7 @@ SN_Salvage:add_button("Complete Preps", function()
     locals.set_int("vehrob_planning", SYRl1, 2)
     gui.show_message("Salvage Yard", "Preps should've been completed")
 end)
-SN_Salvage:add_sameline()   
+SN_Salvage:add_sameline()
 SN_Salvage:add_button("Reset Preps", function()
     stats.set_int(MPX() .. "SALV23_GEN_BS", 0)
     stats.set_int(MPX() .. "SALV23_SCOPE_BS", 0)
@@ -6321,7 +6521,7 @@ end)
 SN_Salvage:add_text("")
 SN_Salvage:add_text("Misc")
 SN_Salvage:add_separator()
-SN_Salvage:add_button("Instant Finish", function()    
+SN_Salvage:add_button("Instant Finish", function()
     for _, mission in ipairs(SalvageYard.salvage_missions) do
         local value = locals.get_int(mission.script, mission.step1)
         locals.set_int(mission.script, mission.step1, value | (1 << 11))
@@ -6341,29 +6541,27 @@ SN_Salvage:add_button("Skip Cutscene", SkipCutscene)
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 -- Cluckin Bell --
 local cluckperps = {
-    { id = 0 , name = "Slush Fund"},
-    { id = 1 , name = "Breaking and Entering"},
-    { id = 3 , name = "Concealed Rewards"},
-    { id = 7 , name = "Hit And Run"},
-    { id = 15, name = "Disorganized Crime"},
-    { id = 31, name = "Scene of Crime"}
+    { id = 0, name = "Slush Fund" },
+    { id = 1, name = "Breaking and Entering" },
+    { id = 3, name = "Concealed Rewards" },
+    { id = 7, name = "Hit And Run" },
+    { id = 15, name = "Disorganized Crime" },
+    { id = 31, name = "Scene of Crime" },
 }
 
 local SN_Cluck = HeistsDataEditorMenu:add_tab("Cluckin Bell Heist ")
 
 SN_Cluck:add_text("Complete Preps")
 
-for _,cluckprep in ipairs(cluckperps) do
-    SN_Cluck:add_button(cluckprep.name,
-    function ()
+for _, cluckprep in ipairs(cluckperps) do
+    SN_Cluck:add_button(cluckprep.name, function()
         stats.set_int(MPX() .. "SALV23_INST_PROG", cluckprep.id)
     end)
     SN_Cluck:add_sameline()
 end
 SN_Cluck:add_separator()
 SN_Cluck:add_text("Reset preps")
-SN_Cluck:add_button("Reset Preps",
-function ()
+SN_Cluck:add_button("Reset Preps", function()
     stats.set_int(MPX() .. "SALV23_INST_PROG", 0)
 end)
 
@@ -6378,39 +6576,40 @@ end
 
 local SN_Doomsday = HeistsDataEditorMenu:add_tab("Doomsday Heist ")
 SN_Doomsday:add_text("Doomsday Acts")
-SN_Doomsday:add_button("Data Breaches",
-function ()
+SN_Doomsday:add_button("Data Breaches", function()
     DoomsdayActSetter(503, 229383)
 end)
 SN_Doomsday:add_sameline()
-SN_Doomsday:add_button("Bogdan Problem",
-function ()
+SN_Doomsday:add_button("Bogdan Problem", function()
     DoomsdayActSetter(240, 229378)
 end)
 SN_Doomsday:add_sameline()
-SN_Doomsday:add_button("Doomsday Scenario",
-function ()
+SN_Doomsday:add_button("Doomsday Scenario", function()
     DoomsdayActSetter(16368, 229380)
 end)
 
 local DoomsdayHeists = {
-    [503]   = {975000, 1218750},
-    [240]   = {1425000, 1771250},
-    [16368] = {1800000, 2250000}
+    [503] = { 975000, 1218750 },
+    [240] = { 1425000, 1771250 },
+    [16368] = { 1800000, 2250000 },
 }
 
 function SetDoomsdayMaxPayout()
     local heist = stats.get_int(MPX() .. "GANGOPS_FLOW_MISSION_PROG")
     local difficulty = globals.get_int(AHDg)
-    if difficulty == 0 then difficulty = 1 end
+    if difficulty == 0 then
+        difficulty = 1
+    end
 
     local heistData = DoomsdayHeists[heist]
-    if heistData == nil then return end
+    if heistData == nil then
+        return
+    end
 
     local payout = heistData[difficulty]
     local maxPayout = 2550000
     local cut = math.floor(maxPayout / (payout / 100))
-    
+
     return cut
 end
 
@@ -6425,7 +6624,7 @@ local Presets = {
     { name = "All - 0%", index = 0 },
     { name = "All - 85%", index = 85 },
     { name = "All - 100%", index = 100 },
-    { name = "2.55mil Payout", index = -1 }
+    { name = "2.55mil Payout", index = -1 },
 }
 
 local presetNames = {}
@@ -6445,10 +6644,18 @@ SN_Doomsday:add_imgui(function()
         if cutValue == -1 then
             cutValue = SetDoomsdayMaxPayout()
         end
-        if dmsdyCut1 then dmsdyCut1:set_value(cutValue) end
-        if dmsdyCut2 then dmsdyCut2:set_value(cutValue) end
-        if dmsdyCut3 then dmsdyCut3:set_value(cutValue) end
-        if dmsdyCut4 then dmsdyCut4:set_value(cutValue) end
+        if dmsdyCut1 then
+            dmsdyCut1:set_value(cutValue)
+        end
+        if dmsdyCut2 then
+            dmsdyCut2:set_value(cutValue)
+        end
+        if dmsdyCut3 then
+            dmsdyCut3:set_value(cutValue)
+        end
+        if dmsdyCut4 then
+            dmsdyCut4:set_value(cutValue)
+        end
     end
 end)
 
@@ -6465,8 +6672,10 @@ SN_Doomsday:add_separator()
 SN_Doomsday:add_text("Team Lives:")
 local livesValueDoomsday = 3
 SN_Doomsday:add_imgui(function()
-    if checkOnline() then return end
-    
+    if checkOnline() then
+        return
+    end
+
     ImGui.Text("Team Lives:")
     livesValueDoomsday, _ = ImGui.InputInt("##DoomsdayLives", livesValueDoomsday)
     if ImGui.Button("Set Lives##Doomsday") then
@@ -6484,30 +6693,26 @@ end)
 
 SN_Doomsday:add_separator()
 SN_Doomsday:add_text("Preps")
-SN_Doomsday:add_button("Reset Preps",
-function ()
+SN_Doomsday:add_button("Reset Preps", function()
     DoomsdayActSetter(240, 0)
     gui.show_message("Doomsday Heist", "Preps should've been reset")
 end)
 SN_Doomsday:add_sameline()
-SN_Doomsday:add_button("Complete Preps",
-function ()
+SN_Doomsday:add_button("Complete Preps", function()
     stats.set_int(MPX() .. "GANGOPS_FM_MISSION_PROG", -1)
 end)
 SN_Doomsday:add_separator()
 SN_Doomsday:add_text("Extras")
-SN_Doomsday:add_button("By Act III Pass hack",
-function ()
+SN_Doomsday:add_button("By Act III Pass hack", function()
     locals.set_int("fm_mission_controller", DDSHl, 3)
 end)
 SN_Doomsday:add_sameline()
-SN_Doomsday:add_button("Solo Launch",
-function()
+SN_Doomsday:add_button("Solo Launch", function()
     if locals.get_int("fmmc_launcher", HGGs1) ~= nil then
         if locals.get_int("fmmc_launcher", HGGs1) ~= 0 then
             if locals.get_int("fmmc_launcher", HGGs1) > 1 then
-                    locals.set_int("fmmc_launcher", HGGs2, 1)
-                    globals.set_int(794989 + 4 + 1 + (locals.get_int("fmmc_launcher", HGGs1) * 95) + 75, 1)
+                locals.set_int("fmmc_launcher", HGGs2, 1)
+                globals.set_int(794989 + 4 + 1 + (locals.get_int("fmmc_launcher", HGGs1) * 95) + 75, 1)
             end
             globals.set_int(HGLs1, 1)
             globals.set_int(HGLs2, 1)
@@ -6601,8 +6806,10 @@ CasinoHeistEditorMenu:add_separator()
 CasinoHeistEditorMenu:add_text("Team Lives:")
 local livesValueCasino = 3
 CasinoHeistEditorMenu:add_imgui(function()
-    if checkOnline() then return end
-    
+    if checkOnline() then
+        return
+    end
+
     ImGui.Text("Team Lives:")
     livesValueCasino, _ = ImGui.InputInt("##CasinoLives", livesValueCasino)
     if ImGui.Button("Set Lives##Casino") then
@@ -6622,13 +6829,13 @@ CasinoHeistEditorMenu:add_separator()
 
 DiamondCasinoDifficulties = {
     { name = "Normal", index = 0 },
-    { name = "Hard", index = 1 }
+    { name = "Hard", index = 1 },
 }
 
 diamondApproachList = {
     { name = "Silent n Snea.", index = 1 },
     { name = "Big Con", index = 2 },
-    { name = "Aggressive", index = 3 }
+    { name = "Aggressive", index = 3 },
 }
 
 diamondGunmanList = {
@@ -6636,7 +6843,7 @@ diamondGunmanList = {
     { name = "Charlie Reed", index = 3 },
     { name = "Patrick McRear.", index = 5 },
     { name = "Gustavo Mota", index = 2 },
-    { name = "Chester McCoy", index = 4 }
+    { name = "Chester McCoy", index = 4 },
 }
 
 diamondLoadoutList = {
@@ -6669,7 +6876,7 @@ diamondLoadoutList = {
     { name = "SMG Mk II", index = 4 },
     { name = "Bullpup Rifle II", index = 4 },
     { name = "Pump Shot. II", index = 4 },
-    { name = "Assault Rifle II", index = 4 }
+    { name = "Assault Rifle II", index = 4 },
 }
 
 diamondDriverList = {
@@ -6677,7 +6884,7 @@ diamondDriverList = {
     { name = "Zach Nelson", index = 4 },
     { name = "Taliana Martinez", index = 2 },
     { name = "Eddie Toh", index = 3 },
-    { name = "Chester McCoy", index = 5 }
+    { name = "Chester McCoy", index = 5 },
 }
 
 diamondVehiclesList = {
@@ -6700,7 +6907,7 @@ diamondVehiclesList = {
     { name = "Zhaba", index = 5 },
     { name = "Vagrant", index = 5 },
     { name = "Outlaw", index = 5 },
-    { name = "Everon", index = 5 }
+    { name = "Everon", index = 5 },
 }
 
 diamondHackerList = {
@@ -6708,7 +6915,7 @@ diamondHackerList = {
     { name = "Yohan Blair", index = 3 },
     { name = "Christian Feltz", index = 2 },
     { name = "Page Harris", index = 5 },
-    { name = "Avi Schwartz.", index = 4 }
+    { name = "Avi Schwartz.", index = 4 },
 }
 
 diamondMasksList = {
@@ -6724,27 +6931,27 @@ diamondMasksList = {
     { name = "Animal Set", index = 9 },
     { name = "Riot Set", index = 10 },
     { name = "Oni Full Mask Set", index = 11 },
-    { name = "Hockey Set", index = 12 }
+    { name = "Hockey Set", index = 12 },
 }
 
 diamondGuardsList = {
     { name = "Elite", index = 0 },
     { name = "Pro", index = 1 },
     { name = "Unit", index = 2 },
-    { name = "Rookie", index = 3 }
+    { name = "Rookie", index = 3 },
 }
 
 diamondKeycardsList = {
     { name = "None", index = 0 },
     { name = "Level 1", index = 1 },
-    { name = "Level 2", index = 2 }
+    { name = "Level 2", index = 2 },
 }
 
 diamondTargetList = {
     { name = "Cash", index = 0 },
     { name = "Arts", index = 2 },
     { name = "Gold", index = 1 },
-    { name = "Diamonds", index = 3 }
+    { name = "Diamonds", index = 3 },
 }
 
 DiamondCasinoCrewCut = {
@@ -6763,64 +6970,89 @@ DiamondCasinoCrewCut = {
     { tunable = "HEIST3_HACKERS_CHRISTIAN_CUT", default = 7 },
     { tunable = "HEIST3_HACKERS_YOHAN_CUT", default = 5 },
     { tunable = "HEIST3_HACKERS_AVI_CUT", default = 10 },
-    { tunable = "HEIST3_HACKERS_PAIGE_CUT", default = 9 }
+    { tunable = "HEIST3_HACKERS_PAIGE_CUT", default = 9 },
 }
 
 -- Build name lists for all combos
 diamondDifficultyNames = {}
-for _, item in ipairs(DiamondCasinoDifficulties) do table.insert(diamondDifficultyNames, item.name) end
+for _, item in ipairs(DiamondCasinoDifficulties) do
+    table.insert(diamondDifficultyNames, item.name)
+end
 diamondDifficultyIndex = 0
 
 diamondApproachNames = {}
-for _, item in ipairs(diamondApproachList) do table.insert(diamondApproachNames, item.name) end
+for _, item in ipairs(diamondApproachList) do
+    table.insert(diamondApproachNames, item.name)
+end
 diamondApproachIndex = 0
 
 diamondGunmanNames = {}
-for _, item in ipairs(diamondGunmanList) do table.insert(diamondGunmanNames, item.name) end
+for _, item in ipairs(diamondGunmanList) do
+    table.insert(diamondGunmanNames, item.name)
+end
 diamondGunmanIndex = 0
 
 local diamondLoadoutIndex = 0
 
 local diamondDriverNames = {}
-for _, item in ipairs(diamondDriverList) do table.insert(diamondDriverNames, item.name) end
+for _, item in ipairs(diamondDriverList) do
+    table.insert(diamondDriverNames, item.name)
+end
 local diamondDriverIndex = 0
 
 local diamondVehiclesIndex = 0
 
 local diamondHackerNames = {}
-for _, item in ipairs(diamondHackerList) do table.insert(diamondHackerNames, item.name) end
+for _, item in ipairs(diamondHackerList) do
+    table.insert(diamondHackerNames, item.name)
+end
 local diamondHackerIndex = 0
 
 local diamondMasksNames = {}
-for _, item in ipairs(diamondMasksList) do table.insert(diamondMasksNames, item.name) end
+for _, item in ipairs(diamondMasksList) do
+    table.insert(diamondMasksNames, item.name)
+end
 local diamondMasksIndex = 0
 
 local diamondGuardsNames = {}
-for _, item in ipairs(diamondGuardsList) do table.insert(diamondGuardsNames, item.name) end
+for _, item in ipairs(diamondGuardsList) do
+    table.insert(diamondGuardsNames, item.name)
+end
 local diamondGuardsIndex = 0
 
 local diamondKeycardsNames = {}
-for _, item in ipairs(diamondKeycardsList) do table.insert(diamondKeycardsNames, item.name) end
+for _, item in ipairs(diamondKeycardsList) do
+    table.insert(diamondKeycardsNames, item.name)
+end
 local diamondKeycardsIndex = 0
 
 local diamondTargetNames = {}
-for _, item in ipairs(diamondTargetList) do table.insert(diamondTargetNames, item.name) end
+for _, item in ipairs(diamondTargetList) do
+    table.insert(diamondTargetNames, item.name)
+end
 local diamondTargetIndex = 0
 
 -- All prep dropdowns in a single add_imgui block so they render in the correct position
 CasinoHeistEditorMenu:add_imgui(function()
-    if isOffline() then return end
+    if isOffline() then
+        return
+    end
 
     ImGui.Text("Preps:")
     ImGui.Separator()
 
     -- Difficulty
-    local nIndex, changed = ImGui.Combo("Difficulty", diamondDifficultyIndex, diamondDifficultyNames, #diamondDifficultyNames)
-    if changed then diamondDifficultyIndex = nIndex end
+    local nIndex, changed =
+        ImGui.Combo("Difficulty", diamondDifficultyIndex, diamondDifficultyNames, #diamondDifficultyNames)
+    if changed then
+        diamondDifficultyIndex = nIndex
+    end
 
     -- Approach
     nIndex, changed = ImGui.Combo("Approach", diamondApproachIndex, diamondApproachNames, #diamondApproachNames)
-    if changed then diamondApproachIndex = nIndex end
+    if changed then
+        diamondApproachIndex = nIndex
+    end
 
     -- Gunman
     nIndex, changed = ImGui.Combo("Gunman", diamondGunmanIndex, diamondGunmanNames, #diamondGunmanNames)
@@ -6834,10 +7066,14 @@ CasinoHeistEditorMenu:add_imgui(function()
         local gIndex = diamondGunmanList[diamondGunmanIndex + 1].index
         local filnames = {}
         for _, item in ipairs(diamondLoadoutList) do
-            if item.index == gIndex then table.insert(filnames, item.name) end
+            if item.index == gIndex then
+                table.insert(filnames, item.name)
+            end
         end
         nIndex, changed = ImGui.Combo("Loadout", diamondLoadoutIndex, filnames, #filnames)
-        if changed then diamondLoadoutIndex = nIndex end
+        if changed then
+            diamondLoadoutIndex = nIndex
+        end
     end
 
     -- Driver
@@ -6852,31 +7088,45 @@ CasinoHeistEditorMenu:add_imgui(function()
         local dIndex = diamondDriverList[diamondDriverIndex + 1].index
         local filnames = {}
         for _, item in ipairs(diamondVehiclesList) do
-            if item.index == dIndex then table.insert(filnames, item.name) end
+            if item.index == dIndex then
+                table.insert(filnames, item.name)
+            end
         end
         nIndex, changed = ImGui.Combo("Vehicles", diamondVehiclesIndex, filnames, #filnames)
-        if changed then diamondVehiclesIndex = nIndex end
+        if changed then
+            diamondVehiclesIndex = nIndex
+        end
     end
 
     -- Hacker
     nIndex, changed = ImGui.Combo("Hacker", diamondHackerIndex, diamondHackerNames, #diamondHackerNames)
-    if changed then diamondHackerIndex = nIndex end
+    if changed then
+        diamondHackerIndex = nIndex
+    end
 
     -- Masks
     nIndex, changed = ImGui.Combo("Masks", diamondMasksIndex, diamondMasksNames, #diamondMasksNames)
-    if changed then diamondMasksIndex = nIndex end
+    if changed then
+        diamondMasksIndex = nIndex
+    end
 
     -- Guards
     nIndex, changed = ImGui.Combo("Guards", diamondGuardsIndex, diamondGuardsNames, #diamondGuardsNames)
-    if changed then diamondGuardsIndex = nIndex end
+    if changed then
+        diamondGuardsIndex = nIndex
+    end
 
     -- Keycards
     nIndex, changed = ImGui.Combo("Keycards", diamondKeycardsIndex, diamondKeycardsNames, #diamondKeycardsNames)
-    if changed then diamondKeycardsIndex = nIndex end
+    if changed then
+        diamondKeycardsIndex = nIndex
+    end
 
     -- Target
     nIndex, changed = ImGui.Combo("Target", diamondTargetIndex, diamondTargetNames, #diamondTargetNames)
-    if changed then diamondTargetIndex = nIndex end
+    if changed then
+        diamondTargetIndex = nIndex
+    end
 
     ImGui.Separator()
 
@@ -6944,7 +7194,6 @@ CasinoHeistEditorMenu:add_imgui(function()
         locals.set_int("gb_casino_heist_planning", DCRBl, 2)
         gui.show_message("Diamond Casino Heist", "Preps should've been reset")
     end
-
 end)
 
 local casinoCrewCuts_enabled = false
@@ -6962,9 +7211,11 @@ function SetDiamondMaxPayout()
         [0] = { 2115000, 2326500 },
         [2] = { 2350000, 2585000 },
         [1] = { 2585000, 2843500 },
-        [3] = { 3290000, 3619000 }
+        [3] = { 3290000, 3619000 },
     }
-    if payouts[target] == nil then return 100, 100 end
+    if payouts[target] == nil then
+        return 100, 100
+    end
     local payout = payouts[target][difficulty] + 819000
     local maxPayout = 3619000
     local gunman = stats.get_int(MPX() .. "H3OPT_CREWWEAP")
@@ -6990,7 +7241,7 @@ local casinoCutPresets = {
     { name = "All - 0%", index = 0 },
     { name = "All - 85%", index = 85 },
     { name = "All - 100%", index = 100 },
-    { name = "3.6mil Payout", index = -1 }
+    { name = "3.6mil Payout", index = -1 },
 }
 local casinoCutPresetNames = {}
 for _, preset in ipairs(casinoCutPresets) do
@@ -6999,7 +7250,9 @@ end
 local sPresetIndex = 0
 
 CasinoHeistEditorMenu:add_imgui(function()
-    if isOffline() then return end
+    if isOffline() then
+        return
+    end
 
     ImGui.Separator()
     ImGui.Text("Cuts:")
@@ -7044,7 +7297,12 @@ CasinoHeistEditorMenu:add_imgui(function()
 end)
 
 script.register_looped("DiamondCasino_Crew", function()
-    if not network.is_session_started() or SCRIPT.GET_NUMBER_OF_THREADS_RUNNING_THE_SCRIPT_WITH_THIS_HASH(joaat("maintransition")) > 0 then return end
+    if
+        not network.is_session_started()
+        or SCRIPT.GET_NUMBER_OF_THREADS_RUNNING_THE_SCRIPT_WITH_THIS_HASH(joaat("maintransition")) > 0
+    then
+        return
+    end
     for _, cut in ipairs(DiamondCasinoCrewCut) do
         if casinoCrewCuts_enabled then
             tunables.set_int(cut.tunable, 0)
@@ -7055,7 +7313,9 @@ script.register_looped("DiamondCasino_Crew", function()
 end)
 
 CasinoHeistEditorMenu:add_imgui(function()
-    if isOffline() then return end
+    if isOffline() then
+        return
+    end
     ImGui.Separator()
     if ImGui.Button("Reload boards") then
         locals.set_int("gb_casino_heist_planning", DCRBl, 2)
@@ -7067,7 +7327,10 @@ CasinoHeistEditorMenu:add_imgui(function()
                 locals.set_int("fmmc_launcher", HGGs2, 1)
                 globals.set_int(794989 + 4 + 1 + (locals.get_int("fmmc_launcher", HGGs1) * 95) + 75, 1)
             end
-            globals.set_int(HGLs1, 1); globals.set_int(HGLs2, 1); globals.set_int(HGLs3, 1); globals.set_int(HGLs4, 0)
+            globals.set_int(HGLs1, 1)
+            globals.set_int(HGLs2, 1)
+            globals.set_int(HGLs3, 1)
+            globals.set_int(HGLs4, 0)
         end
     end
     ImGui.SameLine()
@@ -7083,7 +7346,12 @@ CasinoHeistExtra:add_text("Hacks")
 local casinoAutograbber = CasinoHeistExtra:add_checkbox("Autograbber")
 script.register_looped("casinoAg", function(script)
     script:yield()
-    if not network.is_session_started() or SCRIPT.GET_NUMBER_OF_THREADS_RUNNING_THE_SCRIPT_WITH_THIS_HASH(joaat("maintransition")) > 0 then return end
+    if
+        not network.is_session_started()
+        or SCRIPT.GET_NUMBER_OF_THREADS_RUNNING_THE_SCRIPT_WITH_THIS_HASH(joaat("maintransition")) > 0
+    then
+        return
+    end
     if casinoAutograbber:is_enabled() then
         if locals.get_int(FMC, DCAg) == 3 then
             locals.set_int(FMC, DCAg, 4)
@@ -7093,11 +7361,15 @@ script.register_looped("casinoAg", function(script)
     end
 end)
 CasinoHeistExtra:add_button("Bypass Fingerprint Hack", function()
-    if locals.get_int(FMC, DCFHl) == 4 then locals.set_int(FMC, DCFHl, 5) end
+    if locals.get_int(FMC, DCFHl) == 4 then
+        locals.set_int(FMC, DCFHl, 5)
+    end
 end)
 CasinoHeistExtra:add_sameline()
 CasinoHeistExtra:add_button("Bypass Keypad Hack", function()
-    if locals.get_int(FMC, DCKHl) ~= 4 then locals.set_int(FMC, DCKHl, 5) end
+    if locals.get_int(FMC, DCKHl) ~= 4 then
+        locals.set_int(FMC, DCKHl, 5)
+    end
 end)
 CasinoHeistExtra:add_sameline()
 CasinoHeistExtra:add_button("Bypass Drill Vault Door", function()
@@ -7106,19 +7378,28 @@ end)
 CasinoHeistExtra:add_button("Instant Finish", function()
     local approachType = stats.get_int(MPX() .. "H3OPT_APPROACH")
     if approachType == 3 then
-        locals.set_int(FMC, DCXf1, 12); locals.set_int(FMC, DCXf3, 80)
-        locals.set_int(FMC, DCXf4, 10000000); locals.set_int(FMC, DCXf5, 99999); locals.set_int(FMC, DCXf6, 99999)
-    else    
-        locals.set_int(FMC, DCXf2, 5); locals.set_int(FMC, DCXf3, 80)
-        locals.set_int(FMC, DCXf4, 10000000); locals.set_int(FMC, DCXf5, 99999); locals.set_int(FMC, DCXf6, 99999)
+        locals.set_int(FMC, DCXf1, 12)
+        locals.set_int(FMC, DCXf3, 80)
+        locals.set_int(FMC, DCXf4, 10000000)
+        locals.set_int(FMC, DCXf5, 99999)
+        locals.set_int(FMC, DCXf6, 99999)
+    else
+        locals.set_int(FMC, DCXf2, 5)
+        locals.set_int(FMC, DCXf3, 80)
+        locals.set_int(FMC, DCXf4, 10000000)
+        locals.set_int(FMC, DCXf5, 99999)
+        locals.set_int(FMC, DCXf6, 99999)
     end
     gui.show_message("Instant Heist Passed", "Activated")
 end)
 CasinoHeistExtra:add_sameline()
 CasinoHeistExtra:add_button("Force Ready", function()
     script.run_in_fiber(function(script)
-        network.force_script_host(FMC); script:sleep(1000)
-        for i = 1, 4 do globals.set_int(1882572 + 1 + ((i - 1) * 315) + 43 + 11 + i, 1) end
+        network.force_script_host(FMC)
+        script:sleep(1000)
+        for i = 1, 4 do
+            globals.set_int(1882572 + 1 + ((i - 1) * 315) + 43 + 11 + i, 1)
+        end
     end)
 end)
 CasinoHeistExtra:add_sameline()
@@ -7128,16 +7409,16 @@ CasinoHeistExtra:add_button("Skip Cutscene", SkipCutscene)
 -- Cayo Heist --
 local CayoPericoCrewCut = {
     { tunable = "IH_DEDUCTION_PAVEL_CUT", default = -0.02 },
-    { tunable = "IH_DEDUCTION_FENCING_FEE", default = -0.1 }
+    { tunable = "IH_DEDUCTION_FENCING_FEE", default = -0.1 },
 }
 
 local cayoPrimaryTargets = {
-    {name="Panther Statue", id = 5},
-    {name="Medrazo Files", id = 4},
-    {name="Diamond", id = 3},
-    {name="Bonds", id = 2},
-    {name="Necklace", id = 1},
-    {name="Tequila", id = 0}
+    { name = "Panther Statue", id = 5 },
+    { name = "Medrazo Files", id = 4 },
+    { name = "Diamond", id = 3 },
+    { name = "Bonds", id = 2 },
+    { name = "Necklace", id = 1 },
+    { name = "Tequila", id = 0 },
 }
 
 function CayoCompletePreps()
@@ -7187,55 +7468,80 @@ function CutsPresetter(global_start, global_finish, cut)
 end
 
 local cayoSecondaryTargets = {
-    { name = "None", caps = "NONE", amount = {
-        compound = { cash = 0, weed = 0, coke = 0, gold = 0 },
-        island = { cash = 0, weed = 0, coke = 0, gold = 0 }
-    }, value = 0 },
-    { name = "Gold", caps = "GOLD", amount = {
-        compound = { cash = 0, weed = 0, coke = 0, gold = 255 },
-        island = { cash = 0, weed = 0, coke = 0, gold = 16777215 }
-    }, value = 333333 },
-    { name = "Cocaine", caps = "COKE", amount = {
-        compound = { cash = 0, weed = 0, coke = 255, gold = 0 },
-        island = { cash = 0, weed = 0, coke = 16777215, gold = 0 }
-    }, value = 202500 },
-    { name = "Weed", caps = "WEED", amount = {
-        compound = { cash = 0, weed = 255, coke = 0, gold = 0 },
-        island = { cash = 0, weed = 16777215, coke = 0, gold = 0 }
-    }, value = 135000 },
-    { name = "Cash", caps = "CASH", amount = {
-        compound = { cash = 255, weed = 0, coke = 0, gold = 0 },
-        island = { cash = 16777215, weed = 0, coke = 0, gold = 0 }
-    }, value = 83250 }
+    {
+        name = "None",
+        caps = "NONE",
+        amount = {
+            compound = { cash = 0, weed = 0, coke = 0, gold = 0 },
+            island = { cash = 0, weed = 0, coke = 0, gold = 0 },
+        },
+        value = 0,
+    },
+    {
+        name = "Gold",
+        caps = "GOLD",
+        amount = {
+            compound = { cash = 0, weed = 0, coke = 0, gold = 255 },
+            island = { cash = 0, weed = 0, coke = 0, gold = 16777215 },
+        },
+        value = 333333,
+    },
+    {
+        name = "Cocaine",
+        caps = "COKE",
+        amount = {
+            compound = { cash = 0, weed = 0, coke = 255, gold = 0 },
+            island = { cash = 0, weed = 0, coke = 16777215, gold = 0 },
+        },
+        value = 202500,
+    },
+    {
+        name = "Weed",
+        caps = "WEED",
+        amount = {
+            compound = { cash = 0, weed = 255, coke = 0, gold = 0 },
+            island = { cash = 0, weed = 16777215, coke = 0, gold = 0 },
+        },
+        value = 135000,
+    },
+    {
+        name = "Cash",
+        caps = "CASH",
+        amount = {
+            compound = { cash = 255, weed = 0, coke = 0, gold = 0 },
+            island = { cash = 16777215, weed = 0, coke = 0, gold = 0 },
+        },
+        value = 83250,
+    },
 }
 
 local cayoLocations = {
-    {name="Front Gate", x=4990.0386, y=-5717.6895, z=19.876024},
-    {name="El Rubio's Office", x=5010.12, y=-5750.1353, z=28.844675},
-    {name="Primary Target", x=5006.7, y=-5756.2, z=15.483983},
-    {name="Secondary Target", x=4999.764160, y=-5749.863770, z=14.840000},
-    {name="Safe Zone", x=4771.479, y=-6165.737, z=-39.079613},
-    {name="Entrance Drinage Pipe", x=5043.74, y=-5815.3193, z=-10.574497},
-    {name="Enter Cayo Perico", x=5053.8516, y=-5772.852, z=-4.1588774},
-    {name="Elevator", x=5012.1533, y=-5749.0107, z=28.945145},
+    { name = "Front Gate", x = 4990.0386, y = -5717.6895, z = 19.876024 },
+    { name = "El Rubio's Office", x = 5010.12, y = -5750.1353, z = 28.844675 },
+    { name = "Primary Target", x = 5006.7, y = -5756.2, z = 15.483983 },
+    { name = "Secondary Target", x = 4999.764160, y = -5749.863770, z = 14.840000 },
+    { name = "Safe Zone", x = 4771.479, y = -6165.737, z = -39.079613 },
+    { name = "Entrance Drinage Pipe", x = 5043.74, y = -5815.3193, z = -10.574497 },
+    { name = "Enter Cayo Perico", x = 5053.8516, y = -5772.852, z = -4.1588774 },
+    { name = "Elevator", x = 5012.1533, y = -5749.0107, z = 28.945145 },
 }
 
 local cayoApproachVehicles = {
-    {name="Longfin", id = 65345},
-    {name="Patrol Boat", id = 65313},
-    {name="Stealth Annihilator", id = 65425},
-    {name="Velum", id = 65289},
-    {name="Alkonost", id = 65413},
-    {name="Kosatka", id = 65283},
-    {name="All Ways", id = 65535},
+    { name = "Longfin", id = 65345 },
+    { name = "Patrol Boat", id = 65313 },
+    { name = "Stealth Annihilator", id = 65425 },
+    { name = "Velum", id = 65289 },
+    { name = "Alkonost", id = 65413 },
+    { name = "Kosatka", id = 65283 },
+    { name = "All Ways", id = 65535 },
 }
 
 local cayoWeapons = {
-    {name="Aggressor", id = 1},
-    {name="Conspirator", id = 2},
-    {name="Crackshot", id = 3},
-    {name="Saboteur", id = 4},
-    {name="Marksman", id = 5},
+    { name = "Aggressor", id = 1 },
+    { name = "Conspirator", id = 2 },
+    { name = "Crackshot", id = 3 },
+    { name = "Saboteur", id = 4 },
+    { name = "Marksman", id = 5 },
 }
 
 -- Move these variables outside to maintain state
@@ -7257,8 +7563,10 @@ local CayoHeistEditorMenu = HeistsDataEditorMenu:add_tab("Cayo Perico Heist ")
 
 -- Put EVERYTHING inside add_imgui
 CayoHeistEditorMenu:add_imgui(function()
-    if checkOnline() then return end
-    
+    if checkOnline() then
+        return
+    end
+
     -- Cayo Bag Size Editor
     ImGui.Text("Cayo Bag Size Editor")
     bagValue, _ = ImGui.InputInt("Bag Size", bagValue)
@@ -7266,9 +7574,9 @@ CayoHeistEditorMenu:add_imgui(function()
         globals.set_int(CPBg, bagValue)
         gui.show_message("Cayo Perico", "Bag size set to " .. bagValue)
     end
-    
+
     ImGui.Separator()
-    
+
     -- Primary Target
     ImGui.Text("Primary Target:")
     local primaryNames = {}
@@ -7282,15 +7590,15 @@ CayoHeistEditorMenu:add_imgui(function()
         stats.set_int(MPX() .. "H4CNF_TARGET", selected.id)
         gui.show_message("Cayo Perico", "Primary target set to: " .. selected.name)
     end
-    
+
     ImGui.Separator()
-    
+
     -- Secondary Targets
     local targetNames = {}
     for i, target in ipairs(cayoSecondaryTargets) do
         table.insert(targetNames, target.name)
     end
-    
+
     ImGui.Text("Compound Target:")
     local nCompoundI, clickedCompound = ImGui.Combo("##Compound", compoundI, targetNames, #targetNames)
     if clickedCompound then
@@ -7307,7 +7615,7 @@ CayoHeistEditorMenu:add_imgui(function()
         )
         gui.show_message("Cayo Perico", "Compound target set to: " .. selected.name)
     end
-    
+
     ImGui.Text("Island Target:")
     local nIslandI, clickedIsland = ImGui.Combo("##Island", islandI, targetNames, #targetNames)
     if clickedIsland then
@@ -7324,12 +7632,12 @@ CayoHeistEditorMenu:add_imgui(function()
         )
         gui.show_message("Cayo Perico", "Island target set to: " .. selected.name)
     end
-    
+
     ImGui.Text("")
     addPaintings, _ = ImGui.Checkbox("Paintings", addPaintings)
-    
+
     ImGui.Separator()
-    
+
     -- Difficulty
     ImGui.Text("Difficulty:")
     if ImGui.Button("Hard") then
@@ -7339,9 +7647,9 @@ CayoHeistEditorMenu:add_imgui(function()
     if ImGui.Button("Normal") then
         stats.set_int(MPX() .. "H4_PROGRESS", 126823)
     end
-    
+
     ImGui.Separator()
-    
+
     -- Approach
     local approachNames = {}
     for _, veh in ipairs(cayoApproachVehicles) do
@@ -7355,9 +7663,9 @@ CayoHeistEditorMenu:add_imgui(function()
         stats.set_int(MPX() .. "H4_MISSIONS", selected.id)
         gui.show_message("Cayo Perico", "Approach set to: " .. selected.name)
     end
-    
+
     ImGui.Separator()
-    
+
     -- Weapons
     local weaponNames = {}
     for _, wep in ipairs(cayoWeapons) do
@@ -7371,9 +7679,9 @@ CayoHeistEditorMenu:add_imgui(function()
         stats.set_int(MPX() .. "H4CNF_WEAPONS", selected.id)
         gui.show_message("Cayo Perico", "Weapon loadout set to: " .. selected.name)
     end
-    
+
     ImGui.Separator()
-    
+
     -- Preps
     if ImGui.Button("Complete Preps") then
         CayoPaintingsToggler(addPaintings)
@@ -7392,22 +7700,22 @@ CayoHeistEditorMenu:add_imgui(function()
         stats.set_int(MPX() .. "H4_PLAYTHROUGH_STATUS", 0)
         locals.set_int("heist_island_planning", CPRSl, 2)
     end
-    
+
     ImGui.Separator()
-    
+
     -- Crew Cuts
     ImGui.Text("Removes fencing fee and Pavel's cut")
     cayoCrewCuts, _ = ImGui.Checkbox("Remove Crew Cuts", cayoCrewCuts)
     -- Note: script.register_looped for this should be handled separately
-    
+
     ImGui.Separator()
-    
+
     -- Cuts
     ImGui.Text("Cuts to All")
     if ImGui.Button("100") then
         CutsPresetter(CPCg1, CPCg4, 100)
     end
-    
+
     ImGui.Text("")
     ImGui.Text("Custom Cut")
     cayocut1, _ = ImGui.InputInt("Cut 1", cayocut1)
@@ -7420,18 +7728,18 @@ CayoHeistEditorMenu:add_imgui(function()
         globals.set_int(CPCg3, cayocut3)
         globals.set_int(CPCg4, cayocut4)
     end
-    
+
     ImGui.Separator()
-    
+
     -- Reload Planning Screen
     ImGui.Text("Reload Planning Screen")
     if ImGui.Button("Reload Planning Screen") then
         locals.set_int("heist_island_planning", CPRSl, 2)
         gui.show_message("Cayo Perico Heist", "Screen should've been reloaded")
     end
-    
+
     ImGui.Separator()
-    
+
     -- Extras
     ImGui.Text("Extras")
     if ImGui.Button("Bypass Drainage Cut") then
@@ -7448,7 +7756,7 @@ CayoHeistEditorMenu:add_imgui(function()
         locals.set_float("fm_mission_controller_2020", CPPCCl, 100.0)
         gui.show_message("Cayo Perico Heist", "Cutting process should've been skipped")
     end
-    
+
     ImGui.Text("Team Lives:")
     livesValueCayo, _ = ImGui.InputInt("##CayolivesValue", livesValueCayo)
     if ImGui.Button("Set Lives") then
@@ -7458,7 +7766,7 @@ CayoHeistEditorMenu:add_imgui(function()
     if ImGui.IsItemHovered() then
         ImGui.SetTooltip("Default is 3. Infinite team lives for the heist (set to 999999 for unlimited)")
     end
-    
+
     if ImGui.Button("Remove All CCTV's") then
         for _, ent in pairs(entities.get_all_objects_as_handles()) do
             for __, cam in pairs(CamList) do
@@ -7471,13 +7779,23 @@ CayoHeistEditorMenu:add_imgui(function()
     end
 
     CamList = {
-    joaat("prop_cctv_cam_01a"), joaat("prop_cctv_cam_01b"), joaat("prop_cctv_cam_02a"), joaat("prop_cctv_cam_03a"),
-    joaat("prop_cctv_cam_04a"), joaat("prop_cctv_cam_04c"), joaat("prop_cctv_cam_05a"), joaat("prop_cctv_cam_06a"),
-    joaat("prop_cctv_cam_07a"), joaat("prop_cs_cctv"), joaat("p_cctv_s"), joaat("hei_prop_bank_cctv_01"),
-    joaat("hei_prop_bank_cctv_02"), joaat("ch_prop_ch_cctv_cam_02a"), joaat("xm_prop_x17_server_farm_cctv_01"),
-}
+        joaat("prop_cctv_cam_01a"),
+        joaat("prop_cctv_cam_01b"),
+        joaat("prop_cctv_cam_02a"),
+        joaat("prop_cctv_cam_03a"),
+        joaat("prop_cctv_cam_04a"),
+        joaat("prop_cctv_cam_04c"),
+        joaat("prop_cctv_cam_05a"),
+        joaat("prop_cctv_cam_06a"),
+        joaat("prop_cctv_cam_07a"),
+        joaat("prop_cs_cctv"),
+        joaat("p_cctv_s"),
+        joaat("hei_prop_bank_cctv_01"),
+        joaat("hei_prop_bank_cctv_02"),
+        joaat("ch_prop_ch_cctv_cam_02a"),
+        joaat("xm_prop_x17_server_farm_cctv_01"),
+    }
 
-    
     if ImGui.Button("Instant Finish") then
         locals.set_int("fm_mission_controller_2020", CPXf1, 9)
         locals.set_int("fm_mission_controller_2020", CPXf2, 50)
@@ -7498,7 +7816,7 @@ CayoHeistEditorMenu:add_imgui(function()
             gui.show_message("Cayo Perico Heist", "Everyone should've been forced ready")
         end)
     end
-    
+
     if ImGui.Button("Kill Cooldown (after solo)") then
         stats.set_int(MPX() .. "H4_TARGET_POSIX", 1659643454)
         stats.set_int(MPX() .. "H4_COOLDOWN", 0)
@@ -7512,20 +7830,20 @@ CayoHeistEditorMenu:add_imgui(function()
         stats.set_int(MPX() .. "H4_COOLDOWN_HARD", 0)
         gui.show_message("Cayo Perico Heist", "Cooldown should've been killed")
     end
-    
+
     ImGui.Text("After clicking the Kill Cooldown button, go offline and then come back online")
-    
+
     ImGui.Separator()
-    
+
     -- Teleports
     ImGui.Text("Teleports")
-    
+
     for i, location in ipairs(cayoLocations) do
         if ImGui.Button(location.name) then
             local ped = PLAYER.PLAYER_PED_ID()
             PED.SET_PED_COORDS_KEEP_VEHICLE(ped, location.x, location.y, location.z)
         end
-        
+
         if i < 6 or i == 7 then
             ImGui.SameLine()
         end
@@ -7535,7 +7853,12 @@ end)
 -- Handle the Crew Cuts loop separately
 script.register_looped("SN_CayoPerico_Crew", function(script)
     script:yield()
-    if not network.is_session_started() or SCRIPT.GET_NUMBER_OF_THREADS_RUNNING_THE_SCRIPT_WITH_THIS_HASH(joaat("maintransition")) > 0 then return end
+    if
+        not network.is_session_started()
+        or SCRIPT.GET_NUMBER_OF_THREADS_RUNNING_THE_SCRIPT_WITH_THIS_HASH(joaat("maintransition")) > 0
+    then
+        return
+    end
     for _, cut in ipairs(CayoPericoCrewCut) do
         if cayoCrewCuts then
             tunables.set_float(cut.tunable, 0)
@@ -7555,14 +7878,14 @@ glassCaseNames = {
     [1] = "Gemstone",
     [2] = "Horse",
     [3] = "Coquard Carcanet",
-    [4] = "Memento Non Mori"
+    [4] = "Memento Non Mori",
 }
 glassCaseTypes = {
     [0] = "Tall Glass Case",
     [1] = "Tall Glass Case",
     [2] = "Horizontal Glass Case",
     [3] = "Horizontal Glass Case",
-    [4] = "Horizontal Glass Case"
+    [4] = "Horizontal Glass Case",
 }
 
 -- ============================================
@@ -7616,19 +7939,42 @@ local targetShortNames = {
     "Until Death",
     "What Are Melons?",
     "Outcome Endeavour",
-    "Mi O Melee"
+    "Mi O Melee",
 }
 
 local targetBasePayouts = {
-    481250, 304500, 305000, 305500, 306000, 306500, 307000,
-    307500, 308000, 308500, 309000, 309500, 310000, 310500,
-    311000, 311500, 312000, 312500, 313000, 313500, 314000,
-    314500, 315000, 315500, 316000, 365000, 317000
+    481250,
+    304500,
+    305000,
+    305500,
+    306000,
+    306500,
+    307000,
+    307500,
+    308000,
+    308500,
+    309000,
+    309500,
+    310000,
+    310500,
+    311000,
+    311500,
+    312000,
+    312500,
+    313000,
+    313500,
+    314000,
+    314500,
+    315000,
+    315500,
+    316000,
+    365000,
+    317000,
 }
 
 k26Targets = {}
 for i = 1, 27 do
-    k26Targets[i] = {name = targetShortNames[i], id = i - 1, payout = targetBasePayouts[i], index = i}
+    k26Targets[i] = { name = targetShortNames[i], id = i - 1, payout = targetBasePayouts[i], index = i }
 end
 
 targetNames = {}
@@ -7683,7 +8029,7 @@ end
 -- ============================================
 
 function EnableSoloSecondaryTargets()
-    local target_indices = {0, 1, 5, 6, 7, 20, 21}
+    local target_indices = { 0, 1, 5, 6, 7, 20, 21 }
     for _, i in ipairs(target_indices) do
         local base = KCSECONDARY_BASE + (i * 333)
         globals.set_int(base + 68, 0)
@@ -7871,10 +8217,15 @@ end
 
 script.register_looped("KortzCenterAutoHack", function(s)
     s:yield()
-    if not network.is_session_started() or SCRIPT.GET_NUMBER_OF_THREADS_RUNNING_THE_SCRIPT_WITH_THIS_HASH(joaat("maintransition")) > 0 then return end
-    
+    if
+        not network.is_session_started()
+        or SCRIPT.GET_NUMBER_OF_THREADS_RUNNING_THE_SCRIPT_WITH_THIS_HASH(joaat("maintransition")) > 0
+    then
+        return
+    end
+
     local heistActive = isKortzHeistActive()
-    
+
     if not heistActive and heistWasActive then
         dataCrackTriggered = false
         fingerprintTriggered = false
@@ -7883,14 +8234,14 @@ script.register_looped("KortzCenterAutoHack", function(s)
         s:sleep(500)
         return
     end
-    
+
     heistWasActive = heistActive
-    
+
     if not heistActive or not autoHacks then
         s:sleep(500)
         return
     end
-    
+
     -- ============================================
     -- DATA CRACK DETECTION - FIXED
     -- ============================================
@@ -7904,7 +8255,7 @@ script.register_looped("KortzCenterAutoHack", function(s)
                 break
             end
         end
-        
+
         -- Also check if data crack is active by checking the first rod specifically
         if not isDataCrackActive then
             local firstRod = locals.get_int("fm_mission_controller_v3", KCDCL + 1)
@@ -7912,7 +8263,7 @@ script.register_looped("KortzCenterAutoHack", function(s)
                 isDataCrackActive = true
             end
         end
-        
+
         if isDataCrackActive then
             -- Bypass all rods
             for b = 0, 7 do
@@ -7942,7 +8293,7 @@ script.register_looped("KortzCenterAutoHack", function(s)
             return
         end
     end
-    
+
     -- ============================================
     -- FINGERPRINT DETECTION - FIXED
     -- ============================================
@@ -7965,7 +8316,7 @@ script.register_looped("KortzCenterAutoHack", function(s)
             return
         end
     end
-    
+
     -- ============================================
     -- VAULT DOOR DETECTION - FIXED
     -- ============================================
@@ -7988,7 +8339,7 @@ script.register_looped("KortzCenterAutoHack", function(s)
             return
         end
     end
-    
+
     s:sleep(100)
 end)
 
@@ -7997,8 +8348,10 @@ end)
 -- ============================================
 
 KortzCenterHeistMenu:add_imgui(function()
-    if checkOnline() then return end
-    
+    if checkOnline() then
+        return
+    end
+
     -- Heist Status
     local heistActive = isKortzHeistActive()
     if heistActive then
@@ -8007,11 +8360,11 @@ KortzCenterHeistMenu:add_imgui(function()
         ImGui.TextColored(1.0, 0.5, 0.0, 1.0, "● HEIST NOT ACTIVE")
     end
     ImGui.Dummy(0, 5)
-    
+
     -- Primary Target Selection
     ImGui.TextColored(1.0, 0.8, 0.2, 1.0, "PRIMARY TARGET")
     ImGui.Separator()
-    
+
     local nIndex, changed = ImGui.Combo("##PrimaryTarget", k26_heist_target, targetShortNames, #targetShortNames)
     if changed then
         k26_heist_target = nIndex
@@ -8019,81 +8372,106 @@ KortzCenterHeistMenu:add_imgui(function()
         gui.show_message("Kortz Center Heist", "Target set to: " .. targetShortNames[k26_heist_target + 1])
     end
     ImGui.Dummy(0, 8)
-    
+
     -- Payout Setter
     ImGui.TextColored(1.0, 0.8, 0.2, 1.0, "PAYOUT SETTINGS")
     ImGui.Separator()
-    
-    ImGui.TextColored(0.6, 0.6, 0.6, 1.0, "💡 Changes apply instantly - use 'Reload Board' to refresh the planning board view")
+
+    ImGui.TextColored(
+        0.6,
+        0.6,
+        0.6,
+        1.0,
+        "💡 Changes apply instantly - use 'Reload Board' to refresh the planning board view"
+    )
     ImGui.Dummy(0, 5)
-    
+
     -- Target selection for payout
     local targetIdx = selectedPayoutTarget + 1
-    local newSelection, changed2 = ImGui.Combo("Select Target to Edit", selectedPayoutTarget, targetShortNames, #targetShortNames)
+    local newSelection, changed2 =
+        ImGui.Combo("Select Target to Edit", selectedPayoutTarget, targetShortNames, #targetShortNames)
     if changed2 then
         selectedPayoutTarget = newSelection
         targetIdx = selectedPayoutTarget + 1
     end
-    
+
     if targetIdx >= 1 and targetIdx <= 27 then
         ImGui.Text("Target: " .. targetShortNames[targetIdx])
         ImGui.Text("Base Payout: $" .. string.format("%.0f", targetBasePayouts[targetIdx]))
-        
+
         local currentPayout = getCurrentPayout(targetIdx)
         if currentPayout > 0 then
             ImGui.TextColored(0.0, 1.0, 0.0, 1.0, "Current Payout: $" .. string.format("%.0f", currentPayout))
         else
             ImGui.TextColored(0.5, 0.5, 0.5, 1.0, "Current Payout: Not Set (using base value)")
         end
-        
+
         ImGui.Dummy(0, 5)
-        
+
         -- Multiplier
         ImGui.Text("Multiplier:")
-        payoutModifiers[targetIdx], _ = ImGui.InputFloat("##Multiplier" .. targetIdx, payoutModifiers[targetIdx], 0.1, 0.5, "%.1f")
-        
+        payoutModifiers[targetIdx], _ =
+            ImGui.InputFloat("##Multiplier" .. targetIdx, payoutModifiers[targetIdx], 0.1, 0.5, "%.1f")
+
         -- Custom Value
         ImGui.Text("Custom Value:")
-        payoutCustomValues[targetIdx], _ = ImGui.InputInt("##CustomValue" .. targetIdx, payoutCustomValues[targetIdx], 1000, 10000)
-        
+        payoutCustomValues[targetIdx], _ =
+            ImGui.InputInt("##CustomValue" .. targetIdx, payoutCustomValues[targetIdx], 1000, 10000)
+
         ImGui.Dummy(0, 5)
-        
+
         -- Apply buttons
         if ImGui.Button("Apply Multiplier") then
             local newPayout = math.floor(targetBasePayouts[targetIdx] * payoutModifiers[targetIdx])
             if newPayout > 0 then
                 setPayout(targetIdx, newPayout)
-                gui.show_message("Kortz Center Heist", "✓ " .. targetShortNames[targetIdx] .. " set to $" .. string.format("%.0f", newPayout))
+                gui.show_message(
+                    "Kortz Center Heist",
+                    "✓ " .. targetShortNames[targetIdx] .. " set to $" .. string.format("%.0f", newPayout)
+                )
             end
         end
-        
+
         ImGui.SameLine()
-        
+
         if ImGui.Button("Apply Custom Value") then
             if payoutCustomValues[targetIdx] > 0 then
                 setPayout(targetIdx, payoutCustomValues[targetIdx])
-                gui.show_message("Kortz Center Heist", "✓ " .. targetShortNames[targetIdx] .. " set to $" .. string.format("%.0f", payoutCustomValues[targetIdx]))
+                gui.show_message(
+                    "Kortz Center Heist",
+                    "✓ "
+                        .. targetShortNames[targetIdx]
+                        .. " set to $"
+                        .. string.format("%.0f", payoutCustomValues[targetIdx])
+                )
             else
                 gui.show_message("Kortz Center Heist", "Please enter a custom value greater than 0!")
             end
         end
-        
+
         ImGui.SameLine()
-        
+
         if ImGui.Button("Reset This Target") then
             setPayout(targetIdx, targetBasePayouts[targetIdx])
             payoutModifiers[targetIdx] = 1.0
             payoutCustomValues[targetIdx] = 0
-            gui.show_message("Kortz Center Heist", "✓ " .. targetShortNames[targetIdx] .. " reset to default! ($" .. string.format("%.0f", targetBasePayouts[targetIdx]) .. ")")
+            gui.show_message(
+                "Kortz Center Heist",
+                "✓ "
+                    .. targetShortNames[targetIdx]
+                    .. " reset to default! ($"
+                    .. string.format("%.0f", targetBasePayouts[targetIdx])
+                    .. ")"
+            )
         end
     end
-    
+
     ImGui.Dummy(0, 8)
-    
+
     -- Quick Actions
     ImGui.TextColored(0.6, 0.6, 0.6, 1.0, "Quick Actions")
     ImGui.Separator()
-    
+
     if ImGui.Button("2x All Targets") then
         for i = 1, 27 do
             payoutModifiers[i] = 2.0
@@ -8103,7 +8481,7 @@ KortzCenterHeistMenu:add_imgui(function()
         gui.show_message("Kortz Center Heist", "✓ All targets set to 2x payout!")
     end
     ImGui.SameLine()
-    
+
     if ImGui.Button("3x All Targets") then
         for i = 1, 27 do
             payoutModifiers[i] = 3.0
@@ -8113,7 +8491,7 @@ KortzCenterHeistMenu:add_imgui(function()
         gui.show_message("Kortz Center Heist", "✓ All targets set to 3x payout!")
     end
     ImGui.SameLine()
-    
+
     if ImGui.Button("5x All Targets") then
         for i = 1, 27 do
             payoutModifiers[i] = 5.0
@@ -8123,7 +8501,7 @@ KortzCenterHeistMenu:add_imgui(function()
         gui.show_message("Kortz Center Heist", "✓ All targets set to 5x payout!")
     end
     ImGui.SameLine()
-    
+
     if ImGui.Button("Reset All Payouts") then
         for i = 1, 27 do
             setPayout(i, targetBasePayouts[i])
@@ -8132,24 +8510,24 @@ KortzCenterHeistMenu:add_imgui(function()
         end
         gui.show_message("Kortz Center Heist", "✓ All payouts reset to default!")
     end
-    
+
     ImGui.Dummy(0, 8)
-    
+
     -- Board Management
     ImGui.TextColored(0.6, 0.6, 0.6, 1.0, "Board Management")
     ImGui.Separator()
-    
+
     if ImGui.Button("🔄 Reload Planning Board") then
         KortzReloadBoard()
     end
     ImGui.TextColored(0.6, 0.6, 0.6, 1.0, "Refresh the planning board to see updated payout values")
-    
+
     ImGui.Dummy(0, 8)
-    
+
     -- General Settings
     ImGui.TextColored(1.0, 0.8, 0.2, 1.0, "GENERAL SETTINGS")
     ImGui.Separator()
-    
+
     local currentBag = getCurrentBagSize()
     ImGui.Text("Bag Capacity: " .. currentBag)
     bagSizeValue, _ = ImGui.InputInt("##BagSize", bagSizeValue)
@@ -8164,9 +8542,9 @@ KortzCenterHeistMenu:add_imgui(function()
     if ImGui.IsItemHovered() then
         ImGui.SetTooltip("Default is 100. Determines how much loot you can carry.")
     end
-    
+
     ImGui.Separator()
-    
+
     local currentLives = getCurrentLives()
     ImGui.Text("Team Lives: " .. currentLives)
     livesValue, _ = ImGui.InputInt("##Lives", livesValue)
@@ -8181,9 +8559,9 @@ KortzCenterHeistMenu:add_imgui(function()
     if ImGui.IsItemHovered() then
         ImGui.SetTooltip("Default is 3. Set to 999999 for unlimited lives.")
     end
-    
+
     ImGui.Separator()
-    
+
     ImGui.Text("Weekly Bonus Multiplier:")
     weeklyMultiplierValue, _ = ImGui.InputFloat("##WeeklyMultiplier", weeklyMultiplierValue)
     if ImGui.Button("Set Weekly Multiplier") then
@@ -8197,9 +8575,9 @@ KortzCenterHeistMenu:add_imgui(function()
     if ImGui.IsItemHovered() then
         ImGui.SetTooltip("Default is 4.0x. Affects the first sale bonus multiplier.")
     end
-    
+
     ImGui.Separator()
-    
+
     ImGui.Text("Difficulty:")
     if ImGui.Button("Hard Mode") then
         stats.set_int(MPX() .. "K26_GENERAL_BS", 1784442458)
@@ -8217,9 +8595,9 @@ KortzCenterHeistMenu:add_imgui(function()
     if ImGui.IsItemHovered() then
         ImGui.SetTooltip("Enables Normal Mode. Standard difficulty.")
     end
-    
+
     ImGui.Separator()
-    
+
     if ImGui.Button("Skip Cooldown") then
         KortzSkipCooldown()
     end
@@ -8233,13 +8611,13 @@ KortzCenterHeistMenu:add_imgui(function()
     if ImGui.IsItemHovered() then
         ImGui.SetTooltip("Reloads the planning board to reflect latest changes.")
     end
-    
+
     ImGui.Separator()
-    
+
     -- Prep Work
     ImGui.TextColored(1.0, 0.8, 0.2, 1.0, "PREP WORK")
     ImGui.Separator()
-    
+
     if ImGui.Button("Scope Out Kortz Center") then
         stats.set_int(MPX() .. "K26_ROBBERY_PROG", stats.get_int(MPX() .. "K26_ROBBERY_PROG") | 1)
         gui.show_message("Kortz Center Heist", "Kortz Center scoped out!")
@@ -8255,7 +8633,7 @@ KortzCenterHeistMenu:add_imgui(function()
     if ImGui.IsItemHovered() then
         ImGui.SetTooltip("Removes the Scope Out completion.")
     end
-    
+
     if ImGui.Button("Alpha Mail Disguise") then
         stats.set_int(MPX() .. "K26_ROBBERY_PROG", stats.get_int(MPX() .. "K26_ROBBERY_PROG") | 2)
         gui.show_message("Kortz Center Heist", "Alpha Mail Disguise acquired!")
@@ -8271,7 +8649,7 @@ KortzCenterHeistMenu:add_imgui(function()
     if ImGui.IsItemHovered() then
         ImGui.SetTooltip("Completes the Hazmat Suit prep.")
     end
-    
+
     if ImGui.Button("Staff Key Card") then
         stats.set_int(MPX() .. "K26_ROBBERY_PROG", stats.get_int(MPX() .. "K26_ROBBERY_PROG") | 8)
         gui.show_message("Kortz Center Heist", "Staff Key Card acquired!")
@@ -8287,7 +8665,7 @@ KortzCenterHeistMenu:add_imgui(function()
     if ImGui.IsItemHovered() then
         ImGui.SetTooltip("Completes the Tactical Equipment prep.")
     end
-    
+
     if ImGui.Button("Hacking Device") then
         stats.set_int(MPX() .. "K26_ROBBERY_PROG", stats.get_int(MPX() .. "K26_ROBBERY_PROG") | 32)
         gui.show_message("Kortz Center Heist", "Hacking Device acquired!")
@@ -8303,7 +8681,7 @@ KortzCenterHeistMenu:add_imgui(function()
     if ImGui.IsItemHovered() then
         ImGui.SetTooltip("Completes the Access Code prep.")
     end
-    
+
     ImGui.Text("Vehicles:")
     if ImGui.Button("Armored Caracara") then
         stats.set_int(MPX() .. "K26_ROBBERY_PROG", stats.get_int(MPX() .. "K26_ROBBERY_PROG") | 256)
@@ -8328,11 +8706,11 @@ KortzCenterHeistMenu:add_imgui(function()
     if ImGui.IsItemHovered() then
         ImGui.SetTooltip("Unlocks the Manchez.")
     end
-    
+
     ImGui.Separator()
     ImGui.TextColored(1.0, 0.8, 0.2, 1.0, "OPTIONAL PREP WORK (Requires POI)")
     ImGui.Separator()
-    
+
     if ImGui.Button("Scope Points of Interest") then
         stats.set_int(MPX() .. "K26_POI_BS", -1)
         gui.show_message("Kortz Center Heist", "Points of Interest scoped!")
@@ -8340,7 +8718,7 @@ KortzCenterHeistMenu:add_imgui(function()
     if ImGui.IsItemHovered() then
         ImGui.SetTooltip("Scopes all Points of Interest.")
     end
-    
+
     ImGui.Text("General Upgrades:")
     if ImGui.Button("Guard Routes") then
         setK26Bit("K26_GENERAL_BS", 32, "Guard Routes")
@@ -8368,7 +8746,7 @@ KortzCenterHeistMenu:add_imgui(function()
     if ImGui.IsItemHovered() then
         ImGui.SetTooltip("Provides EMP charges.")
     end
-    
+
     ImGui.Text("Loadouts:")
     if ImGui.Button("Street Loadout") then
         setK26Bit("K26_GENERAL_BS", 512, "Street Loadout")
@@ -8390,7 +8768,7 @@ KortzCenterHeistMenu:add_imgui(function()
     if ImGui.IsItemHovered() then
         ImGui.SetTooltip("Equips Military Loadout.")
     end
-    
+
     ImGui.Text("Manchez Colors:")
     if ImGui.Button("Red Manchez") then
         setK26Bit("K26_GENERAL_BS", 131072, "Red Manchez")
@@ -8432,11 +8810,11 @@ KortzCenterHeistMenu:add_imgui(function()
     if ImGui.IsItemHovered() then
         ImGui.SetTooltip("Weaker guards - easier to take down.")
     end
-    
+
     ImGui.Separator()
     ImGui.TextColored(1.0, 0.8, 0.2, 1.0, "SECONDARY TARGETS")
     ImGui.Separator()
-    
+
     if ImGui.Button("Scope All Secondary Targets") then
         stats.set_int(MPX() .. "K26_SCOPING_BS", -1)
         gui.show_message("Kortz Center Heist", "All secondary targets scoped!")
@@ -8444,11 +8822,11 @@ KortzCenterHeistMenu:add_imgui(function()
     if ImGui.IsItemHovered() then
         ImGui.SetTooltip("Reveals all secondary targets.")
     end
-    
+
     ImGui.Separator()
     ImGui.TextColored(1.0, 0.8, 0.2, 1.0, "QUICK ACTIONS")
     ImGui.Separator()
-    
+
     if ImGui.Button("Complete All Preps") then
         stats.set_int(MPX() .. "K26_GENERAL_BS", -1)
         stats.set_int(MPX() .. "K26_ROBBERY_PROG", 65535)
@@ -8470,11 +8848,11 @@ KortzCenterHeistMenu:add_imgui(function()
     if ImGui.IsItemHovered() then
         ImGui.SetTooltip("Resets all prep progress.")
     end
-    
+
     ImGui.Separator()
     ImGui.TextColored(1.0, 0.8, 0.2, 1.0, "EXTRAS")
     ImGui.Separator()
-    
+
     if ImGui.Button("Skip Cutscene") then
         SkipCutscene()
         gui.show_message("Kortz Center Heist", "Cutscene skipped!")
@@ -8491,33 +8869,35 @@ end)
 KortzCenterCrackerMenu = KortzCenterHeistMenu:add_tab("Mission Cracker")
 
 KortzCenterCrackerMenu:add_imgui(function()
-    if checkOnline() then return end
-    
+    if checkOnline() then
+        return
+    end
+
     local heistActive = isKortzHeistActive()
-    
+
     ImGui.TextColored(1.0, 0.8, 0.2, 1.0, "KORTZ CENTER CRACKER")
     ImGui.Separator()
-    
+
     -- Auto Door Hacks
     ImGui.TextColored(1.0, 0.8, 0.2, 1.0, "AUTO DOOR HACKS")
     ImGui.Separator()
-    
+
     autoHacks, _ = ImGui.Checkbox("Enable Auto Door Hacks", autoHacks)
     if ImGui.IsItemHovered() then
         ImGui.SetTooltip(
-            "Automatically bypasses door-related hacks when detected.\n\n" ..
-            "Hacks included:\n" ..
-            "- Data Crack: Auto-bypasses when minigame starts\n" ..
-            "- Fingerprint: Auto-bypasses when scanner is active\n" ..
-            "- Vault Door: Auto-bypasses when hack is active\n\n" ..
-            "These trigger ONLY when you reach them, not all at once!"
+            "Automatically bypasses door-related hacks when detected.\n\n"
+                .. "Hacks included:\n"
+                .. "- Data Crack: Auto-bypasses when minigame starts\n"
+                .. "- Fingerprint: Auto-bypasses when scanner is active\n"
+                .. "- Vault Door: Auto-bypasses when hack is active\n\n"
+                .. "These trigger ONLY when you reach them, not all at once!"
         )
     end
-    
+
     if not heistActive then
         ImGui.TextColored(1.0, 0.8, 0.0, 1.0, "Start the heist first to use auto hacks.")
     end
-    
+
     if autoHacks and heistActive then
         ImGui.TextColored(0.0, 1.0, 0.0, 1.0, "Auto Door Hacks: ENABLED")
         ImGui.TextColored(0.6, 0.6, 0.6, 1.0, "Data Crack | Fingerprint | Vault Door")
@@ -8527,13 +8907,13 @@ KortzCenterCrackerMenu:add_imgui(function()
         ImGui.TextColored(0.6, 0.6, 0.6, 1.0, "Auto Door Hacks: DISABLED")
         ImGui.TextColored(0.6, 0.6, 0.6, 1.0, "Use manual buttons below")
     end
-    
+
     ImGui.Dummy(0, 5)
-    
+
     -- Manual Door Hacks
     ImGui.TextColored(1.0, 0.8, 0.2, 1.0, "MANUAL DOOR HACKS")
     ImGui.Separator()
-    
+
     if ImGui.Button("Skip Data Crack") then
         KortzSkipDataCrack()
     end
@@ -8554,13 +8934,13 @@ KortzCenterCrackerMenu:add_imgui(function()
     if ImGui.IsItemHovered() then
         ImGui.SetTooltip("Bypasses the vault door signal nodes hack.\nInstant access to the vault.")
     end
-    
+
     ImGui.Dummy(0, 5)
-    
+
     -- Access & Security
     ImGui.TextColored(1.0, 0.8, 0.2, 1.0, "ACCESS & SECURITY")
     ImGui.Separator()
-    
+
     if ImGui.Button("Auto-Enter Access Code") then
         KortzAutoAccessCode()
     end
@@ -8574,18 +8954,20 @@ KortzCenterCrackerMenu:add_imgui(function()
     if ImGui.IsItemHovered() then
         ImGui.SetTooltip("Deactivates the laser grid security system.\nClear path through the laser hallway.")
     end
-    
+
     ImGui.Dummy(0, 5)
-    
+
     -- Glass Cutting
     ImGui.TextColored(1.0, 0.8, 0.2, 1.0, "GLASS CUTTING")
     ImGui.Separator()
-    
+
     if ImGui.Button("Cut All Glass") then
         KortzCutAllGlass()
     end
     if ImGui.IsItemHovered() then
-        ImGui.SetTooltip("Cuts all 5 display cases instantly.\n\nVenus d'Algernon | Gemstone | Horse | Coquard Carcanet | Memento Non Mori")
+        ImGui.SetTooltip(
+            "Cuts all 5 display cases instantly.\n\nVenus d'Algernon | Gemstone | Horse | Coquard Carcanet | Memento Non Mori"
+        )
     end
     ImGui.SameLine()
     if ImGui.Button("Venus d'Algernon") then
@@ -8601,7 +8983,7 @@ KortzCenterCrackerMenu:add_imgui(function()
     if ImGui.IsItemHovered() then
         ImGui.SetTooltip("Cuts the Gemstone display case.")
     end
-    
+
     if ImGui.Button("Horse") then
         CutHorse()
     end
@@ -8622,28 +9004,28 @@ KortzCenterCrackerMenu:add_imgui(function()
     if ImGui.IsItemHovered() then
         ImGui.SetTooltip("Cuts the Memento Non Mori display case.")
     end
-    
+
     ImGui.Dummy(0, 5)
-    
+
     -- Solo Secondary Targets
     ImGui.TextColored(1.0, 0.8, 0.2, 1.0, "SOLO SECONDARY TARGETS")
     ImGui.Separator()
-    
+
     if ImGui.Button("Enable Solo Secondary Targets (B2 Floor)") then
         EnableSoloSecondaryTargets()
     end
     if ImGui.IsItemHovered() then
         ImGui.SetTooltip(
-            "Resets interaction & loot flags for Exhibit Level 2.\n\n" ..
-            "Fixes:\n" ..
-            "- Tall glass cases (i = 0, 1)\n" ..
-            "- Horizontal glass cases (i = 5, 6, 7)\n" ..
-            "- Artwork (i = 20, 21)\n\n" ..
-            "Press when you enter the Exhibit Level 2 room.\n" ..
-            "Note: This is MANUAL only - not in auto mode."
+            "Resets interaction & loot flags for Exhibit Level 2.\n\n"
+                .. "Fixes:\n"
+                .. "- Tall glass cases (i = 0, 1)\n"
+                .. "- Horizontal glass cases (i = 5, 6, 7)\n"
+                .. "- Artwork (i = 20, 21)\n\n"
+                .. "Press when you enter the Exhibit Level 2 room.\n"
+                .. "Note: This is MANUAL only - not in auto mode."
         )
     end
-    
+
     if heistActive then
         ImGui.TextColored(0.0, 1.0, 0.0, 1.0, "Can be enabled once the heist starts.")
         ImGui.TextColored(1.0, 0.8, 0.0, 1.0, "Recommended to enable inside the Exhibit room.")
@@ -8651,15 +9033,18 @@ KortzCenterCrackerMenu:add_imgui(function()
         ImGui.TextColored(1.0, 0.8, 0.0, 1.0, "Start the heist first.")
         ImGui.TextColored(0.6, 0.6, 0.6, 1.0, "Recommended to enable inside the Exhibit room.")
     end
-    
+
     ImGui.Dummy(0, 5)
-    
+
     -- Targets
     ImGui.TextColored(1.0, 0.8, 0.2, 1.0, "TARGETS")
     ImGui.Separator()
-    
+
     if ImGui.Button("Take Primary Target") then
-        script.run_in_fiber(function(s) KortzTakePrimary(); s:sleep(1000) end)
+        script.run_in_fiber(function(s)
+            KortzTakePrimary()
+            s:sleep(1000)
+        end)
     end
     if ImGui.IsItemHovered() then
         ImGui.SetTooltip("Grabs the primary target instantly.\nThe main objective of the heist.")
@@ -8671,13 +9056,13 @@ KortzCenterCrackerMenu:add_imgui(function()
     if ImGui.IsItemHovered() then
         ImGui.SetTooltip("Grabs a secondary target instantly.\nExtra loot for bigger payout.")
     end
-    
+
     ImGui.Dummy(0, 5)
-    
+
     -- Glass Case Status
     ImGui.TextColored(1.0, 0.8, 0.2, 1.0, "GLASS CASE STATUS")
     ImGui.Separator()
-    
+
     for i = 0, 4 do
         local progress = getGlassProgress(i)
         local status, r, g, b = "Available", 1.0, 0.0, 0.0
@@ -8686,7 +9071,20 @@ KortzCenterCrackerMenu:add_imgui(function()
         elseif progress == 0 then
             status, r, g, b = "Empty", 0.5, 0.5, 0.5
         end
-        ImGui.TextColored(r, g, b, 1.0, glassCaseTypes[i] .. ": " .. glassCaseNames[i] .. " - " .. status .. " (" .. string.format("%.1f", progress) .. "%)")
+        ImGui.TextColored(
+            r,
+            g,
+            b,
+            1.0,
+            glassCaseTypes[i]
+                .. ": "
+                .. glassCaseNames[i]
+                .. " - "
+                .. status
+                .. " ("
+                .. string.format("%.1f", progress)
+                .. "%)"
+        )
     end
 end)
 
@@ -8743,7 +9141,9 @@ Alestarov:add_text("Source:")
 Alestarov:add_text("https://github.com/YimMenu-Lua/Alestarov-Menu")
 
 YOUMENU = CreditsMenu:add_tab("And You <3")
-YOUMENU:add_text("Yes You Without You Or Your PRs and support You Give Me This Script Would Be Nothing Fr So Big Thanks To You All")
+YOUMENU:add_text(
+    "Yes You Without You Or Your PRs and support You Give Me This Script Would Be Nothing Fr So Big Thanks To You All"
+)
 YOUMENU:add_text("You can report Bugs And Make PRs With Features Down Bellow:")
 YOUMENU:add_text("https://github.com/UltimateMenu/UltimateMenu/issues")
 
